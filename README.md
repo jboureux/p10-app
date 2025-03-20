@@ -3,7 +3,7 @@
 ## Description du projet
 
 ## Architecture Project
-![image](https://github.com/user-attachments/assets/b5ad9349-9bf4-4ffe-82cb-9ec7667cd5f1)
+![image](https://github.com/user-attachments/assets/56e0a6d7-7808-4125-aaf4-4ff94046c972)
 
 ## Modèle conceptuel de données
 
