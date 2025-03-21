@@ -1,0 +1,14 @@
+name: p10-production
+services:
+  server:
+    build:
+      dockerfile: "../docker/production/SERVER.Dockerfile"
+      context: "../../server"
+    ports:
+      - "4000:4000"
+    networks:
+      - network
+
+networks:
+  network:
+    driver: bridge
