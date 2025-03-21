@@ -1,0 +1,16 @@
+name: p10-development
+services:
+  server:
+    build:
+      dockerfile: "../docker/development/SERVER.Dockerfile"
+      context: "../../server"
+    volumes:
+      - "../../server:/app"
+    ports:
+      - "4000:4000"
+    networks:
+      - network
+
+networks:
+  network:
+    driver: bridge
