@@ -8,7 +8,24 @@ services:
       - "4000:4000"
     networks:
       - network
+  
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: F1production
+    volumes:
+      - prod-db-data:/var/lib/postgresql/data
+    networks:
+      - network
+    ports:                         
+      - "5432:5432"
 
 networks:
   network:
     driver: bridge
+
+volumes:
+  prod-db-data:

@@ -15,3 +15,6 @@ start/prod:
 
 stop/prod:
 	docker compose -f docker/production/compose.yml down
+
+logs/prod/server:
+	docker compose -f docker/production/compose.yml logs -f server

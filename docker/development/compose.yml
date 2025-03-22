@@ -10,7 +10,24 @@ services:
       - "4000:4000"
     networks:
       - network
+  
+  db:
+    image: postgres:16
+    container_name: dev_bdd_postgres
+    environment:
+      POSTGRES_USER: prisma
+      POSTGRES_PASSWORD: prisma
+      POSTGRES_DB: F1database
+    ports:
+      - "5432:5432"
+    volumes:
+      - dev-db-data:/var/lib/postgresql/data
+    networks:
+      - network
 
 networks:
   network:
     driver: bridge
+
+volumes:
+  dev-db-data:
