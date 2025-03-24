@@ -8,7 +8,11 @@ datasource db {
 }
 
 model User {
-  id    Int    @id @default(autoincrement())
-  email String @unique
-  name  String
+  id            Int     @id @default(autoincrement())
+  email         String  @unique
+  firstname     String ?
+  lastname      String ?
+  password      String ?
+  role          String ?
+  apiAvatarId   String ?  @map("api_avatar_id") // correspondance à ta colonne logique
 }

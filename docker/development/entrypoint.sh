@@ -16,8 +16,7 @@ until nc -z db 5432; do
 done
 
 echo "📂 Running Prisma migrate dev..."
-pnpm exec prisma migrate dev --name auto-init --create-only --env-file=.env.dev || true
-pnpm exec prisma migrate deploy --env-file=.env.dev || true
+pnpm exec prisma migrate dev --env-file=.env.dev || true
 
 echo "🏁 Starting dev servera..."
 pnpm dev

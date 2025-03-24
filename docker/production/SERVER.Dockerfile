@@ -26,11 +26,11 @@ COPY --from=builder /build/pnpm-lock.yaml .
 COPY --from=builder /build/prisma ./prisma
 COPY --from=builder /build/.env.prod .env
 
+COPY --from=builder /build/node_modules ./node_modules
+
 RUN corepack enable pnpm
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-
-RUN pnpm install --frozen-lockfile --prod
 
 RUN pnpm exec prisma migrate deploy --schema=./prisma/schema.prisma || true
 
