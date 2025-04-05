@@ -8,7 +8,10 @@ RUN corepack enable pnpm
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 
+COPY dev-entrypoint.sh /dev-entrypoint.sh
+RUN chmod +x /dev-entrypoint.sh
+
 EXPOSE 4000
 
-CMD pnpm install && pnpm dev
+ENTRYPOINT ["/dev-entrypoint.sh"]
 
