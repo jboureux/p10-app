@@ -8,10 +8,24 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
@@ -24,9 +38,16 @@ jobs:
           corepack enable pnpm
           pnpm install
 
+      - name: Set up database and run migrations
+        run: |
+          cd server
+          export DATABASE_URL="postgresql://test:test@localhost:5432/test"
+          pnpm exec prisma migrate deploy
+
       - name: Run tests
         run: |
           cd server
+          export DATABASE_URL="postgresql://test:test@localhost:5432/test"
           pnpm test
 
   check-format:
