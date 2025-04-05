@@ -4,23 +4,31 @@ services:
     build:
       dockerfile: "../docker/production/SERVER.Dockerfile"
       context: "../../server"
+    env_file:
+      - "../../server/.env.prod"
     ports:
       - "4000:4000"
+    depends_on:
+      db:
+        condition: service_healthy
     networks:
       - network
-  
+
   db:
-    image: postgres:16-alpine
+    image: postgres:16
     restart: unless-stopped
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: F1production
+    env_file:
+      - "../../server/.env.prod"
     volumes:
       - prod-db-data:/var/lib/postgresql/data
     networks:
       - network
-    ports:                         
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    ports:
       - "5434:5432"
 
 networks:

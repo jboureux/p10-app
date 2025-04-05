@@ -8,14 +8,10 @@ RUN corepack enable pnpm
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 
-RUN pnpm config set allow-scripts true
-
-RUN pnpm install
-
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+COPY dev-entrypoint.sh /dev-entrypoint.sh
+RUN chmod +x /dev-entrypoint.sh
 
 EXPOSE 4000
 
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/dev-entrypoint.sh"]
 

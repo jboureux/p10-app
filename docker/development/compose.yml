@@ -6,20 +6,19 @@ services:
       context: "../../server"
     volumes:
       - "../../server:/app"
-      - "../../server/prisma:/app/prisma"  
+    env_file:
+      - "../../server/.env.dev"
     ports:
       - "4000:4000"
       - "5555:5555"
     networks:
       - network
-  
+
   db:
     image: postgres:16
     container_name: dev_bdd_postgres
-    environment:
-      POSTGRES_USER: prisma
-      POSTGRES_PASSWORD: prisma
-      POSTGRES_DB: F1database
+    env_file:
+      - "../../server/.env.dev"
     ports:
       - "5433:5432"
     volumes:

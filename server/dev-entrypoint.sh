@@ -4,10 +4,10 @@ echo "✅ Configuring pnpm..."
 pnpm config set allow-scripts true
 
 echo "📦 Installing dependencies..."
-pnpm install --yes
+pnpm install
 
 echo "🔁 Running Prisma generate..."
-pnpm exec prisma generate --env-file=.env.dev
+pnpm exec prisma generate
 
 echo "🚀 Waiting for PostgreSQL to be ready..."
 until nc -z db 5432; do
@@ -16,7 +16,7 @@ until nc -z db 5432; do
 done
 
 echo "📂 Running Prisma migrate dev..."
-pnpm exec prisma migrate dev --env-file=.env.dev || true
+pnpm exec prisma migrate dev || true
 
-echo "🏁 Starting dev servera..."
-pnpm dev
+echo "🏁 Starting dev server..."
+pnpm start:dev
