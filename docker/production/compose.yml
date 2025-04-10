@@ -1,24 +1,37 @@
-name: p10-production
+name: p10-production-${APP_ENV}
 services:
   server:
     build:
       dockerfile: "../docker/production/SERVER.Dockerfile"
       context: "../../server"
-    env_file:
-      - "../../server/.env.prod"
+      args:
+        - APP_ENV=${APP_ENV}
+    container_name: "p10-server-${APP_ENV}"
+    environment:
+      - DATABASE_URL="postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db/${POSTGRES_DB}?schema=public"
+      - NODE_ENV=${NODE_ENV}
     ports:
-      - "4000:4000"
+      - "${SERVER_PORT}:4000"
     depends_on:
       db:
         condition: service_healthy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.p10-serv-${APP_ENV}.rule=Host(`$APP_URL`)"
+      - "traefik.http.routers.p10-serv-${APP_ENV}.entrypoints=websecure"
+      - "traefik.http.routers.p10-servn-${APP_ENV}.tls.certresolver=letsencrypt"
+      - "traefik.docker.network=traefik-proxy"
     networks:
+      - traefik-proxy
       - network
 
   db:
     image: postgres:16
     restart: unless-stopped
-    env_file:
-      - "../../server/.env.prod"
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
     volumes:
       - prod-db-data:/var/lib/postgresql/data
     networks:
@@ -29,11 +42,13 @@ services:
       timeout: 5s
       retries: 20
     ports:
-      - "5434:5432"
+      - "${DB_PORT}:5432"
 
 networks:
   network:
     driver: bridge
+  traefik-proxy:
+    external: true
 
 volumes:
   prod-db-data:

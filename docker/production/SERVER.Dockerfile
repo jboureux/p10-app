@@ -1,3 +1,5 @@
+ARG APP_ENV
+
 FROM node:23-alpine AS builder
 
 WORKDIR /build
@@ -10,7 +12,7 @@ ENV PATH="$PNPM_HOME:$PATH"
 
 RUN pnpm install --frozen-lockfile
 
-COPY .env.prod .env
+COPY .env.prod.${APP_ENV} .env
 
 RUN pnpm exec prisma generate
 RUN pnpm build
@@ -23,7 +25,7 @@ COPY --from=builder /build/dist ./dist
 COPY --from=builder /build/package.json .
 COPY --from=builder /build/pnpm-lock.yaml .
 COPY --from=builder /build/prisma ./prisma
-COPY --from=builder /build/.env.prod .env
+COPY --from=builder /build/config/environment/.env.prod.${APP_ENV} .env
 COPY --from=builder /build/prod-entrypoint.sh .
 RUN chmod +x prod-entrypoint.sh
 
