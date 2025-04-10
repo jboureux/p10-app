@@ -7,7 +7,7 @@ async function bootstrap() {
 
   app.useGlobalFilters(new PrismaClientExceptionFilter());
 
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(4000);
 }
 
 bootstrap().catch((reason) => console.log(reason));
