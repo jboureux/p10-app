@@ -1,0 +1,34 @@
+name: p10-development
+services:
+  server:
+    build:
+      dockerfile: "../docker/development/SERVER.Dockerfile"
+      context: "../../server"
+    volumes:
+      - "../../server:/app"
+    env_file:
+      - "../../server/config/environment/.env.dev"
+    ports:
+      - "4000:4000"
+      - "5555:5555"
+    networks:
+      - network
+
+  db:
+    image: postgres:16
+    container_name: dev_bdd_postgres
+    env_file:
+      - "../../server/config/environment/.env.dev"
+    ports:
+      - "5433:5432"
+    volumes:
+      - dev-db-data:/var/lib/postgresql/data
+    networks:
+      - network
+
+networks:
+  network:
+    driver: bridge
+
+volumes:
+  dev-db-data:
