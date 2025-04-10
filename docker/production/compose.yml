@@ -17,9 +17,9 @@ services:
         condition: service_healthy
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.p10-serv-${APP_ENV}.rule=Host(`$APP_URL`)"
+      - "traefik.http.routers.p10-serv-${APP_ENV}.rule=Host(`${APP_URL}`)"
       - "traefik.http.routers.p10-serv-${APP_ENV}.entrypoints=websecure"
-      - "traefik.http.routers.p10-servn-${APP_ENV}.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.p10-serv-${APP_ENV}.tls.certresolver=letsencrypt"
       - "traefik.docker.network=traefik-proxy"
     networks:
       - traefik-proxy
