@@ -1,10 +1,11 @@
 // src/auth/auth.service.ts
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { RegisterInput } from './dto/register.input';
 import * as bcrypt from 'bcryptjs';
 import { PrismaService } from 'src/prisma.service';
-import { Prisma } from '@prisma/client';
+import { Prisma, User } from '@prisma/client';
+import { LoginInput } from './dto/login.input';
 
 @Injectable()
 export class AuthService {
@@ -45,4 +46,29 @@ export class AuthService {
 
     return { token, user };
   }
+
+  async login(input: LoginInput): Promise<{ token: string; user: User }> {
+    const { email, password } = input;
+  
+    const user = await this.prisma.user.findUnique({
+      where: { email },
+    });
+  
+    if (!user || !user.password) {
+      throw new UnauthorizedException('Email ou mot de passe incorrect');
+    }
+  
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('Email ou mot de passe incorrect');
+    }
+  
+    const token = this.jwtService.sign({ sub: user.id, email: user.email });
+  
+    return {
+      token,
+      user,
+    };
+  }
+  
 }

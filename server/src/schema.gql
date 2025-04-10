@@ -24,8 +24,15 @@ input CreateUserInput {
   role: String!
 }
 
+input LoginInput {
+  email: String!
+  password: String!
+}
+
 type Mutation {
   createUser(createUserInput: CreateUserInput!): User!
+  login(input: LoginInput!): AuthResponse!
+  logout: Boolean!
   register(input: RegisterInput!): AuthResponse!
   removeUser(id: Int!): User!
   updateUser(updateUserInput: UpdateUserInput!): User!
