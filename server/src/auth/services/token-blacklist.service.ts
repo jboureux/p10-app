@@ -7,13 +7,12 @@ export class TokenBlacklistService {
   constructor(private readonly prisma: PrismaService) {}
 
   async blacklist(token: string) {
-    
     const decoded = jwt.decode(token) as { exp: number };
-  
+
     if (!decoded?.exp) {
       throw new Error('Impossible de lire la date d’expiration du token');
     }
-  
+
     await this.prisma.blacklistedToken.create({
       data: {
         token,
@@ -23,7 +22,9 @@ export class TokenBlacklistService {
   }
 
   async isBlacklisted(token: string): Promise<boolean> {
-    const blacklisted = await this.prisma.blacklistedToken.findUnique({ where: { token } });
+    const blacklisted = await this.prisma.blacklistedToken.findUnique({
+      where: { token },
+    });
     return !!blacklisted;
   }
 

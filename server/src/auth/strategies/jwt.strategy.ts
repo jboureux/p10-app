@@ -3,7 +3,6 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { TokenBlacklistService } from '../services/token-blacklist.service';
 
-
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private readonly blacklistService: TokenBlacklistService) {
@@ -15,8 +14,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(req: any,payload: any) {
-
+  async validate(req: any, payload: any) {
     const token = req.get('authorization')?.replace('Bearer ', '');
 
     const isBlacklisted = await this.blacklistService.isBlacklisted(token);
@@ -26,6 +24,4 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
     return { userId: payload.sub, email: payload.email };
   }
-
-
 }

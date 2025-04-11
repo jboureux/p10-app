@@ -17,9 +17,15 @@ describe('TokenBlacklistService', () => {
           provide: PrismaService,
           useValue: {
             blacklistedToken: {
-              create: jest.fn().mockImplementation((data) => Promise.resolve(data)),
-              findUnique: jest.fn().mockImplementation((data) => Promise.resolve(data)),
-              deleteMany: jest.fn().mockImplementation((data) => Promise.resolve(data)),
+              create: jest
+                .fn()
+                .mockImplementation((data) => Promise.resolve(data)),
+              findUnique: jest
+                .fn()
+                .mockImplementation((data) => Promise.resolve(data)),
+              deleteMany: jest
+                .fn()
+                .mockImplementation((data) => Promise.resolve(data)),
             },
           },
         },
@@ -41,7 +47,7 @@ describe('TokenBlacklistService', () => {
       const expectedDate = new Date(expTime * 1000);
 
       (jwt.decode as jest.Mock).mockReturnValue({ exp: expTime });
-      
+
       await service.blacklist(token);
 
       expect(jwt.decode).toHaveBeenCalledWith(token);
@@ -53,41 +59,50 @@ describe('TokenBlacklistService', () => {
       });
 
       // Check that the date passed is close to our expected date
-      const createCall = (prismaService.blacklistedToken.create as jest.Mock).mock.calls[0][0];
-      const dateDiff = Math.abs(createCall.data.expiresAt.getTime() - expectedDate.getTime());
+      const createCall = (prismaService.blacklistedToken.create as jest.Mock)
+        .mock.calls[0][0];
+      const dateDiff = Math.abs(
+        createCall.data.expiresAt.getTime() - expectedDate.getTime(),
+      );
       expect(dateDiff).toBeLessThan(1000); // Allow 1 second difference for test execution time
     });
 
     it('should throw an error if token has no expiration', async () => {
       const token = 'invalid.jwt.token';
-      
+
       (jwt.decode as jest.Mock).mockReturnValue({});
-      
-      await expect(service.blacklist(token)).rejects.toThrow('Impossible de lire la date d’expiration du token');
+
+      await expect(service.blacklist(token)).rejects.toThrow(
+        'Impossible de lire la date d’expiration du token',
+      );
     });
   });
 
   describe('isBlacklisted', () => {
     it('should return true if token is blacklisted', async () => {
       const token = 'blacklisted.token';
-      
-      (prismaService.blacklistedToken.findUnique as jest.Mock).mockResolvedValue({
+
+      (
+        prismaService.blacklistedToken.findUnique as jest.Mock
+      ).mockResolvedValue({
         token,
         expiresAt: new Date(),
       });
-      
+
       const result = await service.isBlacklisted(token);
-      
+
       expect(result).toBe(true);
     });
 
     it('should return false if token is not blacklisted', async () => {
       const token = 'valid.token';
-      
-      (prismaService.blacklistedToken.findUnique as jest.Mock).mockResolvedValue(null);
-      
+
+      (
+        prismaService.blacklistedToken.findUnique as jest.Mock
+      ).mockResolvedValue(null);
+
       const result = await service.isBlacklisted(token);
-      
+
       expect(result).toBe(false);
     });
   });
@@ -95,7 +110,7 @@ describe('TokenBlacklistService', () => {
   describe('cleanExpiredTokens', () => {
     it('should delete expired tokens', async () => {
       await service.cleanExpiredTokens();
-      
+
       expect(prismaService.blacklistedToken.deleteMany).toHaveBeenCalledWith({
         where: {
           expiresAt: {

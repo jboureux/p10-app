@@ -7,10 +7,12 @@ import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { TokenBlacklistService } from './services/token-blacklist.service';
 
-
 @Resolver()
 export class AuthResolver {
-  constructor(private readonly authService: AuthService,  private readonly tokenBlacklistService: TokenBlacklistService,) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly tokenBlacklistService: TokenBlacklistService,
+  ) {}
 
   @Mutation(() => AuthResponse)
   async register(@Args('input') input: RegisterInput) {
@@ -33,6 +35,4 @@ export class AuthResolver {
     await this.tokenBlacklistService.blacklist(token);
     return true;
   }
-
-  
 }

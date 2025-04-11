@@ -17,6 +17,13 @@ import { TokenBlacklistCron } from '../auth/services/token-blacklist.cron';
     }),
     ScheduleModule.forRoot(),
   ],
-  providers: [AuthResolver, AuthService, PrismaService, JwtStrategy,TokenBlacklistService,TokenBlacklistCron],
+  providers: [
+    AuthResolver,
+    AuthService,
+    PrismaService,
+    JwtStrategy,
+    TokenBlacklistService,
+    TokenBlacklistCron,
+  ],
 })
 export class AuthModule {}

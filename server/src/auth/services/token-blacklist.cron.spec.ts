@@ -31,13 +31,15 @@ describe('TokenBlacklistCron', () => {
 
   it('should delete expired tokens', async () => {
     const mockDeleteResult = { count: 5 };
-    jest.spyOn(prismaService.blacklistedToken, 'deleteMany').mockResolvedValue(mockDeleteResult);
-    
+    jest
+      .spyOn(prismaService.blacklistedToken, 'deleteMany')
+      .mockResolvedValue(mockDeleteResult);
+
     // Spy on console.log
     const consoleSpy = jest.spyOn(console, 'log');
-    
+
     await service.cleanExpiredTokens();
-    
+
     expect(prismaService.blacklistedToken.deleteMany).toHaveBeenCalledWith({
       where: {
         expiresAt: {
@@ -45,20 +47,25 @@ describe('TokenBlacklistCron', () => {
         },
       },
     });
-    
-    expect(consoleSpy).toHaveBeenCalledWith('[CRON] 🧹 5 token(s) expiré(s) supprimé(s) de la blacklist.');
+
+    expect(consoleSpy).toHaveBeenCalledWith(
+      '[CRON] 🧹 5 token(s) expiré(s) supprimé(s) de la blacklist.',
+    );
   });
 
   it('should log when no tokens are deleted', async () => {
     const mockDeleteResult = { count: 0 };
-    jest.spyOn(prismaService.blacklistedToken, 'deleteMany').mockResolvedValue(mockDeleteResult);
-    
+    jest
+      .spyOn(prismaService.blacklistedToken, 'deleteMany')
+      .mockResolvedValue(mockDeleteResult);
+
     // Spy on console.log
     const consoleSpy = jest.spyOn(console, 'log');
-    
+
     await service.cleanExpiredTokens();
-    
-    expect(consoleSpy).toHaveBeenCalledWith('[CRON] Aucun token expiré à supprimer.');
+
+    expect(consoleSpy).toHaveBeenCalledWith(
+      '[CRON] Aucun token expiré à supprimer.',
+    );
   });
 });
-

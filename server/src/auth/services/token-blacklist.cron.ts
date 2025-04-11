@@ -18,7 +18,9 @@ export class TokenBlacklistCron {
     });
 
     if (result.count > 0) {
-      console.log(`[CRON] 🧹 ${result.count} token(s) expiré(s) supprimé(s) de la blacklist.`);
+      console.log(
+        `[CRON] 🧹 ${result.count} token(s) expiré(s) supprimé(s) de la blacklist.`,
+      );
     } else {
       console.log('[CRON] Aucun token expiré à supprimer.');
     }
