@@ -16,4 +16,7 @@ export class CreateUserInput {
 
   @Field(() => String, { description: 'User role' })
   role: string;
+
+  @Field(() => String, { description: 'User avatar ID' })
+  apiAvatarId: string;
 }

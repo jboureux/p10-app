@@ -3,8 +3,8 @@ import { CreateUserInput } from './create-user.input';
 
 @InputType()
 export class UpdateUserInput extends PartialType(CreateUserInput) {
-  @Field(() => Int, { description: 'User ID' })
-  id: number;
+  @Field(() => String, { description: 'User ID' })
+  id: string;
 
   @Field(() => String, { description: 'User email', nullable: true })
   email: string;
