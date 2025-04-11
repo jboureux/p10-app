@@ -4,10 +4,12 @@ import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'node:path';
 import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
     UsersModule,
+    AuthModule,
     GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,
       useFactory: () => {
@@ -18,8 +20,25 @@ import { UsersModule } from './users/users.module';
           introspection: true,
           sortSchema: true,
           formatError: (error) => {
+            const originalError = error.extensions?.originalError as Error;
+
+            if (!originalError) {
+              return {
+                message: error.message,
+                code: error.extensions?.code,
+              };
+            }
+
+            // Vérifier si l'erreur est une HttpException (qui a une propriété statusCode)
+            if ('statusCode' in originalError) {
+              return {
+                message: originalError.message,
+                code: originalError.statusCode,
+              };
+            }
+
             return {
-              message: error.message,
+              message: originalError.message,
               code: error.extensions?.status,
             };
           },

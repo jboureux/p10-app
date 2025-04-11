@@ -14,7 +14,6 @@ export class User {
   @Field(() => String, { description: 'User last name' })
   lastname: string;
 
-  @Field(() => String, { description: 'User password' })
   password: string;
 
   @Field(() => String, { description: 'User role' })
