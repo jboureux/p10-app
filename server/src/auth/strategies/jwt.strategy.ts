@@ -21,9 +21,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
     const isBlacklisted = await this.blacklistService.isBlacklisted(token);
     if (isBlacklisted) {
-      throw new UnauthorizedException('Token blacklisté');
+      throw new UnauthorizedException('Not authorized');
     }
-
 
     return { userId: payload.sub, email: payload.email };
   }

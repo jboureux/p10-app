@@ -29,7 +29,7 @@ export class AuthResolver {
     const token = authHeader?.split(' ')[1];
 
     if (!token) return false;
-
+    console.log('Token to blacklist:', token);
     await this.tokenBlacklistService.blacklist(token);
     return true;
   }

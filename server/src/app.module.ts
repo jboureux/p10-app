@@ -20,8 +20,25 @@ import { AuthModule } from './auth/auth.module';
           introspection: true,
           sortSchema: true,
           formatError: (error) => {
+            const originalError = error.extensions?.originalError as Error;
+
+            if (!originalError) {
+              return {
+                message: error.message,
+                code: error.extensions?.code,
+              };
+            }
+
+            // Vérifier si l'erreur est une HttpException (qui a une propriété statusCode)
+            if ('statusCode' in originalError) {
+              return {
+                message: originalError.message,
+                code: originalError.statusCode,
+              };
+            }
+
             return {
-              message: error.message,
+              message: originalError.message,
               code: error.extensions?.status,
             };
           },
