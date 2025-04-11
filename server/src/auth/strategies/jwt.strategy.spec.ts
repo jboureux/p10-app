@@ -31,13 +31,13 @@ describe('JwtStrategy', () => {
   describe('validate', () => {
     it('should return user data when token is valid', async () => {
       const req = { get: jest.fn().mockReturnValue('Bearer valid-token') };
-      const payload = { sub: 1, email: 'test@example.com' };
+      const payload = { sub: 1, email: 'test@example.com',role:'USER' };
 
       jest.spyOn(blacklistService, 'isBlacklisted').mockResolvedValue(false);
 
       const result = await strategy.validate(req, payload);
 
-      expect(result).toEqual({ userId: 1, email: 'test@example.com' });
+      expect(result).toEqual({ userId: 1, email: 'test@example.com',role:'USER' });
       expect(blacklistService.isBlacklisted).toHaveBeenCalledWith(
         'valid-token',
       );
@@ -47,7 +47,7 @@ describe('JwtStrategy', () => {
       const req = {
         get: jest.fn().mockReturnValue('Bearer blacklisted-token'),
       };
-      const payload = { sub: 1, email: 'test@example.com' };
+      const payload = { sub: 1, email: 'test@example.com',role:'USER' };
 
       jest.spyOn(blacklistService, 'isBlacklisted').mockResolvedValue(true);
 
@@ -61,13 +61,13 @@ describe('JwtStrategy', () => {
 
     it('should handle missing authorization header', async () => {
       const req = { get: jest.fn().mockReturnValue(undefined) };
-      const payload = { sub: 1, email: 'test@example.com' };
+      const payload = { sub: 1, email: 'test@example.com',role:'USER' };
 
       jest.spyOn(blacklistService, 'isBlacklisted').mockResolvedValue(false);
 
       const result = await strategy.validate(req, payload);
 
-      expect(result).toEqual({ userId: 1, email: 'test@example.com' });
+      expect(result).toEqual({ userId: 1, email: 'test@example.com',role:'USER' });
       expect(blacklistService.isBlacklisted).toHaveBeenCalledWith(undefined);
     });
   });

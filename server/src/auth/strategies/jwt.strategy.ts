@@ -21,7 +21,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     if (isBlacklisted) {
       throw new UnauthorizedException('Not authorized');
     }
-
-    return { userId: payload.sub, email: payload.email };
+    return { userId: payload.sub, email: payload.email, role: payload.role };
   }
 }
