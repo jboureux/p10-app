@@ -3,7 +3,7 @@ import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/co
 import { JwtService } from '@nestjs/jwt';
 import { RegisterInput } from './dto/register.input';
 import * as bcrypt from 'bcryptjs';
-import { PrismaService } from 'src/prisma.service';
+import { PrismaService } from '../prisma.service';
 import { Prisma, User } from '@prisma/client';
 import { LoginInput } from './dto/login.input';
 
