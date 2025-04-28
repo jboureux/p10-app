@@ -41,6 +41,7 @@ export class AuthService {
         firstname: input.firstname,
         lastname: input.lastname,
         role: 'USER',
+        apiAvatarId: 'avatar-id',
       } as Prisma.UserCreateInput,
     });
 

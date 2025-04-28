@@ -67,6 +67,7 @@ describe('AuthResolver', () => {
         password: 'password123',
         firstname: 'Test',
         lastname: 'User',
+        apiAvatarId: 'avatar-id',
       };
 
       const result = await resolver.register(registerInput);
@@ -88,6 +89,7 @@ describe('AuthResolver', () => {
         password: 'password123',
         firstname: 'Login',
         lastname: 'Test',
+        apiAvatarId: 'avatar-id',
       };
 
       await resolver.register(registerInput);
