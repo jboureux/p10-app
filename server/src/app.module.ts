@@ -6,10 +6,14 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'node:path';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { JoinRequestModule } from './join-request/join-request.module';
+import { LeagueModule } from './league/league.module';
 
 @Module({
   imports: [
     UsersModule,
+    JoinRequestModule,
+    LeagueModule,
     AuthModule,
     GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,

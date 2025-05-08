@@ -19,6 +19,7 @@ model User {
 
   userLeague           UserLeague[]
   BetsSelectionResults BetsSelectionResults[]
+  joinRequests         JoinRequest[]
 }
 
 model League {
@@ -30,6 +31,7 @@ model League {
   apiAvatarId String  @map("api_avatar_id")
 
   userLeague UserLeague[]
+  joinRequests JoinRequest[]
 }
 
 model UserLeague {
@@ -124,6 +126,23 @@ model Track {
   pictureTrack   String @map("picture_track")
 
   GrandPrix GrandPrix[]
+}
+
+model JoinRequest {
+  id        String   @id @unique @default(uuid())
+  userId    String   @map("user_id")
+  leagueId  String   @map("league_id")
+  status    JoinRequestStatus @default(PENDING)
+  createdAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id])
+  league League @relation(fields: [leagueId], references: [id])
+}
+
+enum JoinRequestStatus {
+  PENDING
+  ACCEPTED
+  REFUSED
 }
 
 
