@@ -7,8 +7,8 @@ export class UserLeague {
   @Field(() => ID)
   id: string;
 
-  @Field()
-  is_admin: boolean;
+  @Field({ nullable: true, name: 'is_admin' })
+  isAdmin?: boolean;
 
   @Field()
   role: string;

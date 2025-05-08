@@ -21,6 +21,6 @@ export class League {
   @Field()
   apiAvatarId: string;
 
-  @Field(() => [UserLeague])
-  user_league?: UserLeague[];
+  @Field(() => [UserLeague], { name: 'user_league' })
+  userLeague?: UserLeague[];
 }

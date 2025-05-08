@@ -42,7 +42,7 @@ model UserLeague {
   role     String
 
   user   User   @relation(fields: [userId], references: [id])
-  league League @relation(fields: [leagueId], references: [id])
+  league League @relation(fields: [leagueId], references: [id], onDelete: Cascade)
 }
 
 model Ecurie {
@@ -136,7 +136,7 @@ model JoinRequest {
   createdAt DateTime @default(now())
 
   user   User   @relation(fields: [userId], references: [id])
-  league League @relation(fields: [leagueId], references: [id])
+  league League @relation(fields: [leagueId], references: [id], onDelete: Cascade)
 }
 
 enum JoinRequestStatus {

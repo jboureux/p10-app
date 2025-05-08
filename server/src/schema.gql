@@ -102,6 +102,9 @@ input LoginInput {
 type Mutation {
   createJoinRequest(input: CreateJoinRequestInput!): JoinRequest!
   createLeague(input: CreateLeagueInput!): League!
+  deleteLeague(leagueId: String!): Boolean!
+  joinPrivateLeagueWithLink(sharedLink: String!): Boolean!
+  leaveLeague(leagueId: String!): Boolean!
   login(input: LoginInput!): AuthResponse!
   logout: Boolean!
   register(input: RegisterInput!): AuthResponse!
@@ -126,6 +129,8 @@ type PiloteEcurie {
 }
 
 type Query {
+  getAllLeagues: [League!]!
+  myLeagues: [League!]!
   pendingRequestsByLeague(leagueId: String!): [JoinRequest!]!
   user(id: String!): User!
   users: [User!]!
@@ -183,7 +188,7 @@ type User {
 
 type UserLeague {
   id: ID!
-  is_admin: Boolean!
+  is_admin: Boolean
   league: League!
   role: String!
   user: User!
