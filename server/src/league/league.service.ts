@@ -1,11 +1,12 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { CreateLeagueInput } from './dto/create-league.input';
 import { v4 as uuidv4 } from 'uuid';
+import { PubSub } from 'graphql-subscriptions';
 
 @Injectable()
 export class LeagueService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService,@Inject('PUB_SUB') private readonly pubSub: PubSub) {}
 
   async create(createLeagueInput: CreateLeagueInput, creatorId: string) {
     const sharedLink = uuidv4();
@@ -92,6 +93,14 @@ export class LeagueService {
           where: { id: newAdmin.id },
           data: { isAdmin: true, role: "ADMIN" },
         });
+
+        // await this.pubSub.publish('leagueAdminPromoted', {
+        //   leagueAdminPromoted: {
+        //     userId: newAdmin.userId,
+        //     leagueId,
+        //     leagueName: league.name,
+        //   },
+        // });
       }
     }
   

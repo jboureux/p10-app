@@ -1,15 +1,16 @@
-import { Resolver, Mutation, Args,Query } from '@nestjs/graphql';
+import { Resolver, Mutation, Args,Query, Subscription, Root } from '@nestjs/graphql';
 import { League } from '../entities/league.entity';
 import { CreateLeagueInput } from './dto/create-league.input';
 import { LeagueService } from './league.service';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { UserFromJwt } from 'src/common/types/user-from-jwt.interface';
-import {  UseGuards } from '@nestjs/common';
+import {  Inject, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { PubSub } from 'graphql-subscriptions';
 
 @Resolver(() => League)
 export class LeagueResolver {
-  constructor(private readonly leagueService: LeagueService) {}
+  constructor(private readonly leagueService: LeagueService,@Inject('PUB_SUB') private readonly pubSub: PubSub) {}
 
   @UseGuards(JwtAuthGuard)
   @Mutation(() => League)
@@ -57,4 +58,19 @@ export class LeagueResolver {
   getAllLeagues() {
     return this.leagueService.getAllLeagues();
   }
+
+
+  // @Subscription(() => String, {
+  //   filter: (payload, _, context) => {
+  //     const userId = context?.req?.user?.userId;
+  //     return payload.leagueAdminPromoted.userId === userId;
+  //   },
+  // })
+  // leagueAdminPromoted(@Root() payload: any) {
+  //   const message = payload?.leagueAdminPromoted?.leagueName
+  //     ? `Vous êtes maintenant admin de la ligue "${payload.leagueAdminPromoted.leagueName}"`
+  //     : 'Vous êtes maintenant admin d’une ligue.';
+  //   return message;
+  // }
+
 }

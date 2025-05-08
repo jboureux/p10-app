@@ -143,6 +143,11 @@ input RegisterInput {
   password: String!
 }
 
+type Subscription {
+  joinRequestCreated: String!
+  joinRequestResolved: String!
+}
+
 type Track {
   """Name of the country where race is running"""
   country_name: Int!
