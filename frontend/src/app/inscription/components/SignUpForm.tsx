@@ -20,18 +20,23 @@ export default function SignUpForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
       <div>
-        <label className="block text-sm mb-1">Nom d'utilisateur</label>
+        <label className="block text-sm mb-1">Prénom</label>
         <input
           type="text"
-          placeholder="Ton pseudo"
+          placeholder="Ton prénom"
           className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none"
-          {...register("username", { required: true })}
+          {...register("firstname")}
         />
-        {errors.username && (
-          <p className="text-red-500 text-sm mt-1">
-            Nom d'utilisateur est requis
-          </p>
-        )}
+      </div>
+
+      <div>
+        <label className="block text-sm mb-1">Nom</label>
+        <input
+          type="text"
+          placeholder="Ton nom"
+          className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none"
+          {...register("lastname")}
+        />
       </div>
 
       <div>
