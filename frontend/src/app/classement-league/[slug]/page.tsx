@@ -1,6 +1,3 @@
-"use client";
-
-import { useState } from "react";
 import Header from "./components/Header";
 import OtherPlayers from "./components/OtherPlayers";
 import LeagueCode from "./components/LeagueCode";

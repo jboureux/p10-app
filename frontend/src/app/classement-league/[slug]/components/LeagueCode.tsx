@@ -23,7 +23,7 @@ export default function LeagueCode({ code }: LeagueCodeProps) {
     <>
       <div className="text-center my-4">
         <Button
-          text={showCode ? "Masquer le code" : "Afficher le code"}
+          text={showCode ? "Masquer" : "Partager"}
           onClick={() => setShowCode(!showCode)}
         />
       </div>

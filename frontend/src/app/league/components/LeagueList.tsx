@@ -19,7 +19,7 @@ export default function LeagueList({
   const router = useRouter();
 
   return (
-    <div className="p-4">
+    <div className="p-4 md:w-[80vw] lg:w-2/3 mx-auto">
       <h2 className="text-2xl text-gray-700 font-semibold mb-4">Tes Leagues</h2>
       <div className="space-y-3">
         {teams.map((team, index) => (
