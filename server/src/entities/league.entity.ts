@@ -10,17 +10,17 @@ export class League {
   name: string;
 
   @Field()
-  shared_l_link: string;
+  sharedLink: string;
 
   @Field()
-  is_private: boolean;
+  isPrivate: boolean;
 
   @Field()
-  is_active: boolean;
+  isActive: boolean;
 
   @Field()
-  api_avatar_id: string;
+  apiAvatarId: string;
 
-  @Field(() => [UserLeague])
-  user_league?: UserLeague[];
+  @Field(() => [UserLeague], { name: 'user_league' })
+  userLeague?: UserLeague[];
 }
