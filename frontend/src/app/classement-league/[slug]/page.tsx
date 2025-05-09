@@ -1,10 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import Header from "./components/Header";
 import OtherPlayers from "./components/OtherPlayers";
+import LeagueCode from "./components/LeagueCode";
 
-export default function RankingPage() {
-  // TODO: fetch players from the team
+export default function LeagueRankingPage() {
+  // TODO: fetch league infos
   const players = [
     { id: "19709", icon: "", name: "2e joueur", points: 125 },
     { id: "2UPOU", icon: "", name: "7e joueur", points: 101 },
@@ -21,12 +23,13 @@ export default function RankingPage() {
 
   const podiumPlayers = players.slice(0, 3);
   const othersPlayers = players.slice(3);
-
   return (
     <div className="min-h-screen bg-white">
       <Header podiumPlayers={podiumPlayers} />
 
       <OtherPlayers othersPlayers={othersPlayers} />
+
+      <LeagueCode code="C4KATFHTKO4" />
     </div>
   );
 }

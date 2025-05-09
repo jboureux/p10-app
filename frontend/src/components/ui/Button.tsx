@@ -1,11 +1,15 @@
 interface ButtonProps {
   type?: "button" | "submit";
   text: string;
-  widthFull: boolean;
+  widthFull?: boolean;
   onClick?: () => void;
 }
 
-export default function Button({ text, widthFull, onClick }: ButtonProps) {
+export default function Button({
+  text,
+  widthFull = false,
+  onClick,
+}: ButtonProps) {
   return (
     <button
       onClick={() => onClick && onClick()}

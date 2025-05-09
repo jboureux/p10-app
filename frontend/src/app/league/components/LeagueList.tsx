@@ -25,7 +25,7 @@ export default function LeagueList({
         {teams.map((team, index) => (
           <Link
             key={index}
-            href={`/league-classement/${team.name}`}
+            href={`/classement-league/${team.name}`}
             className="bg-white rounded-xl p-4 flex items-center justify-between shadow-sm"
           >
             <div className="flex items-center gap-4">
