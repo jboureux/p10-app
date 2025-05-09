@@ -45,7 +45,7 @@ export class AuthService {
       } as Prisma.UserCreateInput,
     });
 
-    const payload = { sub: user.id, email: user.email,role: user.role };
+    const payload = { sub: user.id, email: user.email, role: user.role };
     const token = this.jwtService.sign(payload);
 
     return { token, user };

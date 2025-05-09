@@ -1,4 +1,9 @@
-import { ForbiddenException, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { CreateLeagueInput } from './dto/create-league.input';
 import { v4 as uuidv4 } from 'uuid';
@@ -6,7 +11,10 @@ import { PubSub } from 'graphql-subscriptions';
 
 @Injectable()
 export class LeagueService {
-  constructor(private readonly prisma: PrismaService,@Inject('PUB_SUB') private readonly pubSub: PubSub) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    @Inject('PUB_SUB') private readonly pubSub: PubSub,
+  ) {}
 
   async create(createLeagueInput: CreateLeagueInput, creatorId: string) {
     const sharedLink = uuidv4();
@@ -22,7 +30,7 @@ export class LeagueService {
           create: {
             userId: creatorId,
             isAdmin: true,
-            role: "ADMIN",
+            role: 'ADMIN',
           },
         },
       },
@@ -38,23 +46,25 @@ export class LeagueService {
         userLeague: true,
       },
     });
-  
+
     if (!league) {
       throw new NotFoundException('Ligue introuvable');
     }
-  
+
     const isAdmin = league.userLeague.some(
       (ul) => ul.userId === userId && ul.isAdmin,
     );
-  
+
     if (!isAdmin) {
-      throw new ForbiddenException("Seul l'administrateur peut supprimer la ligue");
+      throw new ForbiddenException(
+        "Seul l'administrateur peut supprimer la ligue",
+      );
     }
-  
+
     await this.prisma.league.delete({
       where: { id: leagueId },
     });
-  
+
     return true;
   }
 
@@ -63,23 +73,23 @@ export class LeagueService {
       where: { id: leagueId },
       include: { userLeague: true },
     });
-  
+
     if (!league) {
       throw new NotFoundException('Ligue introuvable');
     }
-  
+
     const current = league.userLeague.find((ul) => ul.userId === userId);
     if (!current) {
       throw new ForbiddenException("Vous n'êtes pas membre de cette ligue");
     }
-  
+
     const otherMembers = league.userLeague.filter((ul) => ul.userId !== userId);
-  
+
     // Supprimer le lien UserLeague du quittant
     await this.prisma.userLeague.delete({
       where: { id: current.id },
     });
-  
+
     if (current.isAdmin) {
       if (otherMembers.length < 1) {
         // Plus personne → on supprime la ligue
@@ -88,10 +98,11 @@ export class LeagueService {
         });
       } else {
         // Transfert aléatoire de rôle admin
-        const newAdmin = otherMembers[Math.floor(Math.random() * otherMembers.length)];
+        const newAdmin =
+          otherMembers[Math.floor(Math.random() * otherMembers.length)];
         await this.prisma.userLeague.update({
           where: { id: newAdmin.id },
-          data: { isAdmin: true, role: "ADMIN" },
+          data: { isAdmin: true, role: 'ADMIN' },
         });
 
         // await this.pubSub.publish('leagueAdminPromoted', {
@@ -103,7 +114,7 @@ export class LeagueService {
         // });
       }
     }
-  
+
     return true;
   }
 
@@ -134,31 +145,35 @@ export class LeagueService {
     });
   }
 
-  async joinPrivateLeagueWithLink(userId: string, sharedLink: string): Promise<boolean> {
+  async joinPrivateLeagueWithLink(
+    userId: string,
+    sharedLink: string,
+  ): Promise<boolean> {
     const league = await this.prisma.league.findUnique({
       where: { sharedLink },
       include: { userLeague: true },
     });
-  
+
     if (!league || !league.isPrivate) {
-      throw new ForbiddenException("Lien invalide ou la ligue n'est pas privée");
+      throw new ForbiddenException(
+        "Lien invalide ou la ligue n'est pas privée",
+      );
     }
-  
-    const alreadyMember = league.userLeague.some(ul => ul.userId === userId);
+
+    const alreadyMember = league.userLeague.some((ul) => ul.userId === userId);
     if (alreadyMember) {
-      throw new ForbiddenException("Vous êtes déjà membre de cette ligue");
+      throw new ForbiddenException('Vous êtes déjà membre de cette ligue');
     }
-  
+
     await this.prisma.userLeague.create({
       data: {
         userId,
         leagueId: league.id,
         isAdmin: false,
-        role: "MEMBER",
+        role: 'MEMBER',
       },
     });
-  
+
     return true;
   }
-  
 }

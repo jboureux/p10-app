@@ -1,14 +1,14 @@
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
-import { ApolloDriver } from '@nestjs/apollo';
 import type { ApolloDriverConfig } from '@nestjs/apollo';
+import { ApolloDriver } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
+import { JwtModule, JwtService } from '@nestjs/jwt';
 import { join } from 'node:path';
-import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { JoinRequestModule } from './join-request/join-request.module';
 import { LeagueModule } from './league/league.module';
-import { JwtModule, JwtService } from '@nestjs/jwt';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -36,7 +36,9 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
           sortSchema: true,
           context: async ({ req, connectionParams }) => {
             if (connectionParams) {
-              const token = connectionParams.Authorization || connectionParams.authorization;
+              const token =
+                connectionParams.Authorization ||
+                connectionParams.authorization;
               if (token) {
                 const decoded = jwtService.verify(token.replace('Bearer ', ''));
                 return {
@@ -56,8 +58,11 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
           subscriptions: {
             'graphql-ws': {
               onConnect: async (ctx) => {
-                const raw = ctx.connectionParams?.Authorization || ctx.connectionParams?.authorization;
-                const token = typeof raw === 'string' ? raw.replace('Bearer ', '') : '';
+                const raw =
+                  ctx.connectionParams?.Authorization ||
+                  ctx.connectionParams?.authorization;
+                const token =
+                  typeof raw === 'string' ? raw.replace('Bearer ', '') : '';
 
                 console.log('>> WebSocket connected with token:', token);
 

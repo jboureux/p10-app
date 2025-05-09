@@ -1,16 +1,26 @@
-import { Resolver, Mutation, Args,Query, Subscription, Root } from '@nestjs/graphql';
+import {
+  Resolver,
+  Mutation,
+  Args,
+  Query,
+  Subscription,
+  Root,
+} from '@nestjs/graphql';
 import { League } from '../entities/league.entity';
 import { CreateLeagueInput } from './dto/create-league.input';
 import { LeagueService } from './league.service';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { UserFromJwt } from 'src/common/types/user-from-jwt.interface';
-import {  Inject, UseGuards } from '@nestjs/common';
+import { Inject, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { PubSub } from 'graphql-subscriptions';
 
 @Resolver(() => League)
 export class LeagueResolver {
-  constructor(private readonly leagueService: LeagueService,@Inject('PUB_SUB') private readonly pubSub: PubSub) {}
+  constructor(
+    private readonly leagueService: LeagueService,
+    @Inject('PUB_SUB') private readonly pubSub: PubSub,
+  ) {}
 
   @UseGuards(JwtAuthGuard)
   @Mutation(() => League)
@@ -45,7 +55,10 @@ export class LeagueResolver {
     @CurrentUser() user: UserFromJwt,
     @Args('sharedLink') sharedLink: string,
   ) {
-    return this.leagueService.joinPrivateLeagueWithLink(user.userId, sharedLink);
+    return this.leagueService.joinPrivateLeagueWithLink(
+      user.userId,
+      sharedLink,
+    );
   }
 
   @UseGuards(JwtAuthGuard)
@@ -59,7 +72,6 @@ export class LeagueResolver {
     return this.leagueService.getAllLeagues();
   }
 
-
   // @Subscription(() => String, {
   //   filter: (payload, _, context) => {
   //     const userId = context?.req?.user?.userId;
@@ -72,5 +84,4 @@ export class LeagueResolver {
   //     : 'Vous êtes maintenant admin d’une ligue.';
   //   return message;
   // }
-
 }

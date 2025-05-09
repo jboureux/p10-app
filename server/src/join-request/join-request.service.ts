@@ -1,8 +1,12 @@
-import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { JoinRequestStatus } from '../entities/join-request.entity';
 import { PrismaService } from '../prisma.service';
 import { CreateJoinRequestInput } from './dto/create-join-request.input';
 import { UpdateJoinRequestStatusInput } from './dto/update-join-request-status.input';
-import { JoinRequestStatus } from '../entities/join-request.entity';
 
 @Injectable()
 export class JoinRequestService {
@@ -25,7 +29,7 @@ export class JoinRequestService {
     });
 
     if (existingMembership) {
-      throw new ForbiddenException("Vous êtes déjà membre de cette ligue");
+      throw new ForbiddenException('Vous êtes déjà membre de cette ligue');
     }
 
     const existingRequest = await this.prisma.joinRequest.findFirst({
@@ -38,7 +42,7 @@ export class JoinRequestService {
 
     if (existingRequest) {
       throw new ForbiddenException(
-        "Une demande est déjà en attente pour cette ligue",
+        'Une demande est déjà en attente pour cette ligue',
       );
     }
 
@@ -98,7 +102,7 @@ export class JoinRequestService {
             userId: request.userId,
             leagueId: request.leagueId,
             isAdmin: false,
-            role: "MEMBER",
+            role: 'MEMBER',
           },
         });
       }
