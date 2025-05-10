@@ -15,13 +15,6 @@ type BetsSelectionResult {
   user: User!
 }
 
-input CreateUserInput {
-  """User avatar ID"""
-  apiAvatarId: String!
-
-  """User email"""
-  email: String!
-
 input CreateJoinRequestInput {
   leagueId: ID!
 }
@@ -115,7 +108,8 @@ type Mutation {
   login(input: LoginInput!): AuthResponse!
   logout: Boolean!
   register(input: RegisterInput!): AuthResponse!
-  removeUser(id: Int!): User!
+  removeUser(id: String!): User!
+  updateJoinRequestStatus(input: UpdateJoinRequestStatusInput!): JoinRequest!
   updateUser(updateUserInput: UpdateUserInput!): User!
 }
 
@@ -135,7 +129,11 @@ type PiloteEcurie {
 }
 
 type Query {
-  user(id: Int!): User!
+  getAllLeagues: [League!]!
+  isLogged: Boolean!
+  myLeagues: [League!]!
+  pendingRequestsByLeague(leagueId: String!): [JoinRequest!]!
+  user(id: String!): User!
   users: [User!]!
 }
 
@@ -146,17 +144,18 @@ input RegisterInput {
   password: String!
 }
 
-input UpdateUserInput {
-  """User email"""
-  email: String
+type Subscription {
+  joinRequestCreated: String!
+  joinRequestResolved: String!
+}
 
 type Track {
   """Name of the country where race is running"""
   country_name: Int!
   grand_prix: [GrandPrix!]
 
-  """User ID"""
-  id: Int!
+  """ID get with Api Tracks"""
+  id_api_tracks: String!
 
   """Path of the picture country"""
   picture_country: String!
@@ -193,17 +192,10 @@ type User {
   user_league: [UserLeague!]
 }
 
-  """User first name"""
-  firstname: String!
-
-  """User ID"""
-  id: Int!
-
-  """User last name"""
-  lastname: String!
-  password: String!
-
-  """User role"""
+type UserLeague {
+  id: ID!
+  is_admin: Boolean
+  league: League!
   role: String!
   user: User!
 }
