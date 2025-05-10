@@ -2,7 +2,7 @@ FROM node:23-alpine AS builder
 ARG APP_ENV
 WORKDIR /build
 
-COPY . .
+COPY server/. .
 
 RUN corepack enable pnpm
 ENV PNPM_HOME="/pnpm"

@@ -7,7 +7,18 @@ type AuthResponse {
   user: User!
 }
 
+type BetsSelectionResult {
+  grand_prix: GrandPrix!
+  grand_prix_pilote: GrandPrixPilote!
+  id: ID!
+  pointP10: Int!
+  user: User!
+}
+
 input CreateUserInput {
+  """User avatar ID"""
+  apiAvatarId: String!
+
   """User email"""
   email: String!
 
@@ -22,6 +33,61 @@ input CreateUserInput {
 
   """User role"""
   role: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Ecurie {
+  color: String!
+  idApiEcurie: ID!
+  logo: String!
+  name: String!
+  pilote_ecurie: [PiloteEcurie!]
+}
+
+type GrandPrix {
+  bets_selection_result: BetsSelectionResult
+
+  """Grand Prix date"""
+  date: String!
+
+  """ID get with API Races"""
+  id_api_races: Int!
+
+  """Grand Prix Season"""
+  season: String!
+
+  """Grand Prix Date"""
+  time: String!
+  track: [Track!]!
+}
+
+type GrandPrixClassement {
+  grand_prix: GrandPrix!
+  grand_prix_pilote: GrandPrixPilote!
+  id: ID!
+  position: Int!
+}
+
+type GrandPrixPilote {
+  ecurie: Ecurie!
+  grand_prix: GrandPrix!
+  grand_prix_classement: [GrandPrixClassement!]
+  id: ID!
+  pilote: Pilote!
+}
+
+type League {
+  api_avatar_id: String!
+  id: ID!
+  is_active: Boolean!
+  is_private: Boolean!
+  name: String!
+  shared_l_link: String!
+  user_league: [UserLeague!]
 }
 
 input LoginInput {
@@ -34,12 +100,28 @@ type Mutation {
   login(input: LoginInput!): AuthResponse!
   logout: Boolean!
   register(input: RegisterInput!): AuthResponse!
-  removeUser(id: Int!): User!
+  removeUser(id: String!): User!
   updateUser(updateUserInput: UpdateUserInput!): User!
 }
 
+type Pilote {
+  id_api_pilote: ID!
+  name: String!
+  name_acronym: String!
+  picture: String!
+  pilote_ecurie: [PiloteEcurie!]
+}
+
+type PiloteEcurie {
+  ecurie: Ecurie!
+  id: ID!
+  pilote: Pilote!
+  year: DateTime!
+}
+
 type Query {
-  user(id: Int!): User!
+  isLogged: Boolean!
+  user(id: String!): User!
   users: [User!]!
 }
 
@@ -50,7 +132,28 @@ input RegisterInput {
   password: String!
 }
 
+type Track {
+  """Name of the country where race is running"""
+  country_name: Int!
+  grand_prix: [GrandPrix!]
+
+  """ID get with Api Tracks"""
+  id_api_tracks: String!
+
+  """Path of the picture country"""
+  picture_country: String!
+
+  """Circuit picture of the track"""
+  picture_track: String!
+
+  """Name of the track"""
+  track_name: String!
+}
+
 input UpdateUserInput {
+  """User avatar ID"""
+  apiAvatarId: String
+
   """User email"""
   email: String
 
@@ -58,7 +161,7 @@ input UpdateUserInput {
   firstname: String
 
   """User ID"""
-  id: Int!
+  id: String!
 
   """User last name"""
   lastname: String
@@ -71,19 +174,20 @@ input UpdateUserInput {
 }
 
 type User {
-  """User email"""
+  api_avatar_id: String
+  bets_selection_results: [BetsSelectionResult!]
   email: String!
-
-  """User first name"""
-  firstname: String!
-
-  """User ID"""
-  id: Int!
-
-  """User last name"""
-  lastname: String!
-  password: String!
-
-  """User role"""
+  firstname: String
+  id: ID!
+  lastname: String
   role: String!
+  user_league: [UserLeague!]
+}
+
+type UserLeague {
+  id: ID!
+  is_admin: Boolean!
+  league: League!
+  role: String!
+  user: User!
 }

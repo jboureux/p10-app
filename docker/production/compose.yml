@@ -1,15 +1,39 @@
 name: p10-production-${APP_ENV}
 services:
+  front:
+    build:
+      dockerfile: "docker/production/FRONT.Dockerfile"
+      context: "../.."
+      args:
+        - APP_ENV=${APP_ENV}
+    container_name: "p10-front-${APP_ENV}"
+    environment:
+      NEXT_PUBLIC_API_URL: "${NEXT_PUBLIC_API_URL}"
+      NODE_ENV: "${NODE_ENV}"
+    ports:
+      - "${WEBAPP_PORT}:3000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.p10-front-${APP_ENV}.rule=Host(`${WEBAPP_TRAEFIK_URL}`)"
+      - "traefik.http.routers.p10-front-${APP_ENV}.entrypoints=websecure"
+      - "traefik.http.routers.p10-front-${APP_ENV}.tls.certresolver=letsencrypt"
+      - "traefik.docker.network=traefik-proxy"
+    networks:
+      # - traefik-proxy
+      - network
+
   server:
     build:
-      dockerfile: "../docker/production/SERVER.Dockerfile"
-      context: "../../server"
+      dockerfile: "docker/production/SERVER.Dockerfile"
+      context: "../.."
       args:
         - APP_ENV=${APP_ENV}
     container_name: "p10-server-${APP_ENV}"
     environment:
       DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db/${POSTGRES_DB}?schema=public"
       NODE_ENV: "${NODE_ENV}"
+      WEBAPP_URL: "${WEBAPP_URL}"
+      JWT_SECRET: "${JWT_SECRET}"
     ports:
       - "${SERVER_PORT}:4000"
     depends_on:
@@ -17,12 +41,12 @@ services:
         condition: service_healthy
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.p10-serv-${APP_ENV}.rule=Host(`${APP_URL}`)"
+      - "traefik.http.routers.p10-serv-${APP_ENV}.rule=Host(`${SERVER_TRAEFIK_URL}`)"
       - "traefik.http.routers.p10-serv-${APP_ENV}.entrypoints=websecure"
       - "traefik.http.routers.p10-serv-${APP_ENV}.tls.certresolver=letsencrypt"
       - "traefik.docker.network=traefik-proxy"
     networks:
-      - traefik-proxy
+      # - traefik-proxy
       - network
 
   db:
@@ -47,8 +71,8 @@ services:
 networks:
   network:
     driver: bridge
-  traefik-proxy:
-    external: true
+  # traefik-proxy:
+  #   external: true
 
 volumes:
   prod-db-data:

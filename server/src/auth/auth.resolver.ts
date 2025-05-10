@@ -1,9 +1,9 @@
-import { Resolver, Mutation, Args, Context } from '@nestjs/graphql';
+import { UseGuards } from '@nestjs/common';
+import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { AuthService } from './auth.service';
+import { LoginInput } from './dto/login.input';
 import { RegisterInput } from './dto/register.input';
 import { AuthResponse } from './entities/auth-response.entity';
-import { LoginInput } from './dto/login.input';
-import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { TokenBlacklistService } from './services/token-blacklist.service';
 
@@ -32,6 +32,12 @@ export class AuthResolver {
 
     if (!token) return false;
     await this.tokenBlacklistService.blacklist(token);
+    return true;
+  }
+
+  @Query(() => Boolean, { name: 'isLogged' })
+  @UseGuards(JwtAuthGuard)
+  isLogged() {
     return true;
   }
 }

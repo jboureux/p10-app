@@ -16,7 +16,7 @@ until nc -z db 5432; do
 done
 
 echo "📂 Running Prisma migrate dev..."
-pnpm exec prisma migrate dev || true
+pnpm exec prisma migrate deploy || true
 
 echo "🏁 Starting dev server..."
 pnpm start:dev
