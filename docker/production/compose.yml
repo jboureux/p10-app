@@ -19,7 +19,7 @@ services:
       - "traefik.http.routers.p10-front-${APP_ENV}.tls.certresolver=letsencrypt"
       - "traefik.docker.network=traefik-proxy"
     networks:
-      # - traefik-proxy
+      - traefik-proxy
       - network
 
   server:
@@ -46,7 +46,7 @@ services:
       - "traefik.http.routers.p10-serv-${APP_ENV}.tls.certresolver=letsencrypt"
       - "traefik.docker.network=traefik-proxy"
     networks:
-      # - traefik-proxy
+      - traefik-proxy
       - network
 
   db:
@@ -71,8 +71,8 @@ services:
 networks:
   network:
     driver: bridge
-  # traefik-proxy:
-  #   external: true
+  traefik-proxy:
+    external: true
 
 volumes:
   prod-db-data:
