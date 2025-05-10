@@ -25,7 +25,7 @@ export default function SignUpForm() {
           type="text"
           placeholder="Ton prénom"
           className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none"
-          {...register("firstname")}
+          {...register("firstName")}
         />
       </div>
 
@@ -35,7 +35,7 @@ export default function SignUpForm() {
           type="text"
           placeholder="Ton nom"
           className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none"
-          {...register("lastname")}
+          {...register("lastName")}
         />
       </div>
 

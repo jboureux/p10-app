@@ -3,8 +3,8 @@ import type { Metadata } from "next";
 import { AppHeader, Navbar } from "@/components/ui";
 
 export const metadata: Metadata = {
-  title: "League",
-  description: "Gestion de la ligue",
+  title: "Profil",
+  description: "Gestion du profil utilisateur",
 };
 
 export default function Layout({
