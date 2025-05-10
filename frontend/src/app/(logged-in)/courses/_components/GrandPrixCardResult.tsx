@@ -1,4 +1,4 @@
-import { GrandPrix } from "../page";
+import { GrandPrix } from "./CoursesPage";
 
 interface GrandPrixResultCardProps {
   gp: GrandPrix;

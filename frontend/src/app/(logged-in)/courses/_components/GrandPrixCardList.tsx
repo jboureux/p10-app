@@ -1,8 +1,8 @@
 import Link from "next/link";
 
-import { GrandPrix } from "../page";
-import GrandPrixResult from "./GrandPrixCardResult";
+import { GrandPrix } from "./CoursesPage";
 import GrandPrixCardDate from "./GrandPrixCardDate";
+import GrandPrixResult from "./GrandPrixCardResult";
 
 interface GrandPrixCardListProps {
   activeTab: "upcoming" | "past";
