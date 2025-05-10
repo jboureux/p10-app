@@ -10,8 +10,8 @@ const LoggedInLayout = async ({
 }: Readonly<{
   children: React.ReactNode;
 }>) => {
+  const cookieStore = await cookies();
   try {
-    const cookieStore = await cookies();
     const token = cookieStore.get(TOKEN_STORE_LOCATION)?.value;
 
     console.log(token);
