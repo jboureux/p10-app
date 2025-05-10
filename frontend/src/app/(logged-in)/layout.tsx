@@ -10,22 +10,30 @@ const LoggedInLayout = async ({
 }: Readonly<{
   children: React.ReactNode;
 }>) => {
-  const cookieStore = await cookies();
-  const token = cookieStore.get(TOKEN_STORE_LOCATION)?.value;
+  try {
+    const cookieStore = await cookies();
+    const token = cookieStore.get(TOKEN_STORE_LOCATION)?.value;
 
-  const query = `
-    query Query {
-      isLogged
+    console.log(token);
+
+    const query = `
+      query Query {
+        isLogged
+      }
+      `;
+
+    const result: IsLoggedInResponse & GqlError =
+      await callAPI<IsLoggedInResponse>({ query: query, token: token });
+
+    console.log(result);
+
+    if (result.data && result.data.isLogged) {
+      return <>{children}</>;
+    } else {
+      redirect("/connexion");
     }
-    `;
-
-  const result: IsLoggedInResponse & GqlError =
-    await callAPI<IsLoggedInResponse>({ query: query, token: token });
-
-  if (result.data && result.data.isLogged) {
-    return <>{children}</>;
-  } else {
-    redirect("/connexion");
+  } catch (error) {
+    console.log(error);
   }
 };
 

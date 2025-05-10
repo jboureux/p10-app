@@ -5,28 +5,36 @@ import { GqlError } from "@/types/errors";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-const LoggedInLayout = async ({
+const GuestLayout = async ({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) => {
-  const cookieStore = await cookies();
-  const token = cookieStore.get(TOKEN_STORE_LOCATION)?.value;
+  try {
+    const cookieStore = await cookies();
+    const token = cookieStore.get(TOKEN_STORE_LOCATION)?.value;
 
-  const query = `
+    console.log(token);
+
+    const query = `
     query Query {
       isLogged
     }
     `;
 
-  const result: IsLoggedInResponse & GqlError =
-    await callAPI<IsLoggedInResponse>({ query: query, token: token });
+    const result: IsLoggedInResponse & GqlError =
+      await callAPI<IsLoggedInResponse>({ query: query, token: token });
 
-  if (result.data && result.data.isLogged) {
-    redirect(AUTH_REDIRECT_PATH);
-  } else {
-    return <>{children}</>;
+    console.log(result);
+
+    if (result.data && result.data.isLogged) {
+      redirect(AUTH_REDIRECT_PATH);
+    } else {
+      return <>{children}</>;
+    }
+  } catch (error) {
+    console.log(error);
   }
 };
 
-export default LoggedInLayout;
+export default GuestLayout;
