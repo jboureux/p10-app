@@ -6,6 +6,8 @@ import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
+  const cookieStore = await cookies();
+
   try {
     const query = `
     mutation Login($input: LoginInput!) {
@@ -34,7 +36,6 @@ export async function POST(request: NextRequest) {
       message: "Authentication successful",
     });
 
-    const cookieStore = await cookies();
     // Add the token as an HTTP-only cookie to the response
     cookieStore.set({
       name: TOKEN_STORE_LOCATION,
