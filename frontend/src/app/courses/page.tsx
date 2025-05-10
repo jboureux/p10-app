@@ -2,54 +2,93 @@
 
 import { useState } from "react";
 
-import GrandPrixList from "./components/GrandPrixList";
 import Tabs from "./components/Tabs";
+import GrandPrixCardList from "./components/GrandPrixCArdList";
+
+export type GrandPrix = {
+  idApiRaces: string;
+  season: string;
+  date: string;
+  time: string;
+  track: {
+    country: string;
+    name: string;
+  };
+  grandPrixClassement?: Array<{
+    status: string;
+    driver: string;
+  }>;
+};
 
 export default function CoursesPage() {
   const [activeTab, setActiveTab] = useState<"upcoming" | "past">("upcoming");
 
-  // TODO: fetch GP list and add a method to split the list into past and upcoming
-  const grandPrixList = [
+  // TODO: fetch GP GPClassement
+  const allGrandPrixList: GrandPrix[] = [
     {
-      date: "03–05",
-      month: "Oct.",
-      round: "Round 21",
-      country: "Brazil",
-      title: "Formula 2 Rolex Grande Premio de Sao Paulo 2023",
-      result: [
-        { status: "DNF", driver: "LEC" },
-        { status: "P10", driver: "OCO" },
+      idApiRaces: "bahrain2025",
+      season: "2024",
+      date: "2025-08-20T14:00:00Z",
+      time: "2025-03-02T14:00:00Z",
+      track: {
+        country: "Bahrain",
+        name: "Bahrain International Circuit",
+      },
+      grandPrixClassement: [],
+    },
+    {
+      idApiRaces: "australia2025",
+      season: "2025",
+      date: "2025-03-24T05:00:00Z",
+      time: "2025-03-24T05:00:00Z",
+      track: {
+        country: "Australia",
+        name: "Albert Park Circuit",
+      },
+      grandPrixClassement: [
+        { status: "P10", driver: "ALB" },
+        { status: "DNF", driver: "OCO" },
       ],
     },
     {
-      date: "03–05",
-      month: "Nov.",
-      round: "Round 21",
-      country: "Brazil",
-      title: "Formula 2 Rolex Grande Premio de Sao Paulo 2023",
-      result: [
-        { status: "DNF", driver: "LEC" },
-        { status: "P10", driver: "OCO" },
+      idApiRaces: "japan2024",
+      season: "2024",
+      date: "2024-09-22T06:00:00Z",
+      time: "2024-09-22T06:00:00Z",
+      track: {
+        country: "Japan",
+        name: "Suzuka International Racing Course",
+      },
+      grandPrixClassement: [
+        { status: "P10", driver: "GAS" },
+        { status: "DNF", driver: "VER" },
       ],
     },
   ];
 
-  const upcomingGrandPrixList = [];
+  const now = new Date();
 
-  const pastGrandPrixList = [];
+  const upcomingGrandPrixList = allGrandPrixList.filter(
+    (gp) => new Date(gp.date) > now
+  );
+
+  const pastGrandPrixList = allGrandPrixList.filter(
+    (gp) => new Date(gp.date) < now
+  );
 
   return (
-    <div className="min-h-screen bg-[#EEF3F6] ">
+    <div className="min-h-screen bg-[#EEF3F6]">
       <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
-      {/* TODO: upcomingGrandPrixList */}
       {activeTab === "upcoming" && (
-        <GrandPrixList activeTab={activeTab} grandPrixList={grandPrixList} />
+        <GrandPrixCardList
+          activeTab="upcoming"
+          grandPrixList={upcomingGrandPrixList}
+        />
       )}
 
-      {/* TODO: pastGrandPrixList */}
       {activeTab === "past" && (
-        <GrandPrixList activeTab={activeTab} grandPrixList={grandPrixList} />
+        <GrandPrixCardList activeTab="past" grandPrixList={pastGrandPrixList} />
       )}
     </div>
   );

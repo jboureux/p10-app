@@ -1,5 +1,5 @@
 interface TabsProps {
-  activeTab: string;
+  activeTab: "upcoming" | "past";
   setActiveTab: (tab: "upcoming" | "past") => void;
 }
 
@@ -14,7 +14,7 @@ export default function Tabs({ activeTab, setActiveTab }: TabsProps) {
             : "border-white text-gray-300"
         }`}
       >
-        A venir
+        À venir
       </button>
       <button
         onClick={() => setActiveTab("past")}
