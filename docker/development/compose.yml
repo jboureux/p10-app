@@ -1,5 +1,17 @@
 name: p10-development
 services:
+  front:
+    build:
+      dockerfile: "../docker/development/FRONT.Dockerfile"
+      context: "../../frontend"
+    volumes:
+      - "../../frontend:/app"
+    env_file:
+      - "../../config/environment/.env.dev"
+    ports:
+      - "3000:3000"
+    networks:
+      - network
   server:
     build:
       dockerfile: "../docker/development/SERVER.Dockerfile"
@@ -7,7 +19,7 @@ services:
     volumes:
       - "../../server:/app"
     env_file:
-      - "../../server/config/environment/.env.dev"
+      - "../../config/environment/.env.dev"
     ports:
       - "4000:4000"
       - "5555:5555"
@@ -18,7 +30,7 @@ services:
     image: postgres:16
     container_name: dev_bdd_postgres
     env_file:
-      - "../../server/config/environment/.env.dev"
+      - "../../config/environment/.env.dev"
     ports:
       - "5433:5432"
     volumes:

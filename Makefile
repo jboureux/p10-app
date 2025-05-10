@@ -7,8 +7,14 @@ stop/dev:
 logs/dev/server:
 	docker compose -f docker/development/compose.yml logs -f server
 
+logs/dev/front:
+	docker compose -f docker/development/compose.yml logs -f front
+
 shell/dev/server:
 	docker compose -f docker/development/compose.yml exec server /bin/sh
+	
+shell/dev/front:
+	docker compose -f docker/development/compose.yml exec front /bin/sh
 
 studio/dev:
 	docker compose -f docker/development/compose.yml exec server pnpm exec prisma studio
