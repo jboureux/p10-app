@@ -6,8 +6,7 @@ export default function ProfileHeader() {
   };
 
   return (
-    <div className="text-white px-4 py-4 lg:px-0 flex justify-between items-center">
-      <h2 className="text-2xl text-gray-700 font-semibold">Mon profil</h2>
+    <div className="text-white px-4 py-4 lg:px-0 text-end">
       <button
         onClick={handleLogout}
         className="text-sm text-gray-800 hover:text-red-200 cursor-pointer"

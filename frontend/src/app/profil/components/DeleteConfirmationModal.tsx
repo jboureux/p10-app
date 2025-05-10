@@ -31,7 +31,7 @@ export default function DeleteConfirmationModal({
           <div className="flex justify-center gap-4">
             <button
               onClick={() => setShowDeleteModal(false)}
-              className="px-4 py-2 rounded-xl border-2 border-[#C62828] text-[#C62828] font-semibold"
+              className="px-4 rounded-xl border-2 border-[#C62828] text-[#C62828] font-semibold m-1"
             >
               Annuler
             </button>

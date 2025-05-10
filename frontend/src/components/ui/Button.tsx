@@ -13,7 +13,7 @@ export default function Button({
   return (
     <button
       onClick={() => onClick && onClick()}
-      className={`bg-[#C62828] text-white px-6 py-2 rounded-xl font-semibold cursor-pointer ${
+      className={`m-1 bg-[#C62828] border-2 border-[#C62828] text-white px-6 py-2 rounded-xl font-semibold cursor-pointer ${
         widthFull && "w-full"
       }`}
     >

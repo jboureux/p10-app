@@ -1,9 +1,6 @@
-"use client";
-
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 import { Button } from "@/components/ui";
-import Link from "next/link";
 
 interface LeagueListProps {
   teams: Array<{ id: string; name: string; members: number }>;
@@ -16,11 +13,11 @@ export default function LeagueList({
   setShowCreateModal,
   setShowJoinModal,
 }: LeagueListProps) {
-  const router = useRouter();
-
   return (
     <div className="p-4 md:w-[80vw] lg:w-2/3 mx-auto">
-      <h2 className="text-2xl text-gray-700 font-semibold mb-4">Tes Leagues</h2>
+      <h2 className="text-lg md:text-2xl text-gray-700 font-semibold mb-4">
+        Tes Leagues
+      </h2>
       <div className="space-y-3">
         {teams.map((team, index) => (
           <Link
