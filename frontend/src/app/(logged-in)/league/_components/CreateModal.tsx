@@ -1,8 +1,10 @@
 "use client";
 
 import { Button } from "@/components/ui";
-import { useState } from "react";
+import { CreateLeagueRequest } from "@/types/leagues";
+import { useRouter } from "next/navigation";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import { createLeague } from "../_actions/create-league.action";
 
 interface CreateModalProps {
   setShowCreateModal: (show: boolean) => void;
@@ -14,14 +16,15 @@ export default function CreateModal({ setShowCreateModal }: CreateModalProps) {
     handleSubmit,
     formState: { errors },
   } = useForm();
-
-  const [leagueType, setLeagueType] = useState<"privée" | "publique" | null>(
-    null
-  );
+  const router = useRouter();
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-    // TODO: Create a new league
-    console.log(data);
+    const result = await createLeague(data as CreateLeagueRequest);
+    if (result?.data?.errors) {
+      console.log(result.data.errors);
+    }
+    router.refresh();
+    setShowCreateModal(false);
   };
 
   return (
@@ -58,37 +61,18 @@ export default function CreateModal({ setShowCreateModal }: CreateModalProps) {
               )}
             </div>
 
-            <div
-              className={`flex justify-around ${errors.type ? "mb-0" : "mb-8"}`}
-            >
+            <div className={`flex justify-around`}>
               <label className="flex items-center gap-2">
                 <input
-                  type="radio"
-                  value="privée"
-                  checked={leagueType === "privée"}
+                  type="checkbox"
                   className="accent-[#C62828]"
-                  {...register("type", {
-                    required: true,
-                    onChange: (e) => setLeagueType(e.target.value),
+                  {...register("isPrivate", {
+                    required: false,
                   })}
                 />
-                Privée
-              </label>
-              <label className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  className="accent-[#C62828]"
-                  {...register("type", {
-                    required: true,
-                    onChange: (e) => setLeagueType(e.target.value),
-                  })}
-                />
-                Publique
+                Créer une league privée
               </label>
             </div>
-            {errors.type && (
-              <p className="text-red-500 text-sm">Type de League est requis</p>
-            )}
 
             <Button type="submit" text="Créer une League" widthFull />
           </form>

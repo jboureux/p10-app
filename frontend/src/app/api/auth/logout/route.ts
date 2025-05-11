@@ -1,5 +1,5 @@
 // app/api/auth/login/route.ts
-import { TOKEN_STORE_LOCATION } from "@/config/auth";
+import { TOKEN_STORE_LOCATION, USERID_STORE_LOCATION } from "@/config/auth";
 import { callAPI } from "@/lib/api-client";
 import { LogOutResponse } from "@/types/auth";
 import { GqlError } from "@/types/errors";
@@ -29,6 +29,7 @@ export async function POST() {
     }
 
     cookieStore.delete(TOKEN_STORE_LOCATION);
+    cookieStore.delete(USERID_STORE_LOCATION);
 
     // Create a new response
     const nextResponse = NextResponse.json({

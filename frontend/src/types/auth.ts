@@ -9,6 +9,9 @@ export interface RegisterResponse {
   data: {
     register: {
       token: string;
+      user: {
+        id: string;
+      };
     };
   };
 }
@@ -28,6 +31,9 @@ export interface LogInResponse {
   data: {
     login: {
       token: string;
+      user: {
+        id: string;
+      };
     };
   };
 }

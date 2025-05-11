@@ -1,7 +1,10 @@
 "use client";
 
 import { Button } from "@/components/ui";
+import { JoinLeagueRequest } from "@/types/leagues";
+import { useRouter } from "next/navigation";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import { joinLeague } from "../_actions/join-league.action";
 
 interface JoinModalProps {
   setShowJoinModal: (show: boolean) => void;
@@ -14,9 +17,15 @@ export default function JoinModal({ setShowJoinModal }: JoinModalProps) {
     formState: { errors },
   } = useForm();
 
+  const router = useRouter();
+
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-    // TODO: Join league with code
-    console.log(data);
+    const result = await joinLeague(data as JoinLeagueRequest);
+    if (result?.data?.errors) {
+      console.log(result.data.errors);
+    }
+    router.refresh();
+    setShowJoinModal(false);
   };
 
   return (
@@ -42,11 +51,11 @@ export default function JoinModal({ setShowJoinModal }: JoinModalProps) {
                 type="text"
                 placeholder="0000"
                 className={`w-full border border-gray-300 rounded-lg px-4 py-2 ${
-                  errors.code ? "mb-1" : "mb-6"
+                  errors.sharedLink ? "mb-1" : "mb-6"
                 } text-center tracking-widest focus:outline-none`}
-                {...register("code", { required: true })}
+                {...register("sharedLink", { required: true })}
               />
-              {errors.code && (
+              {errors.sharedLink && (
                 <p className="text-red-500 text-sm mt-1">Code est requis</p>
               )}
             </div>

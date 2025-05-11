@@ -1,5 +1,5 @@
 // app/api/auth/login/route.ts
-import { TOKEN_STORE_LOCATION } from "@/config/auth";
+import { TOKEN_STORE_LOCATION, USERID_STORE_LOCATION } from "@/config/auth";
 import { callAPI } from "@/lib/api-client";
 import { RegisterResponse } from "@/types/auth";
 import { GqlError } from "@/types/errors";
@@ -14,6 +14,9 @@ export async function POST(request: NextRequest) {
     mutation Register($input: RegisterInput!) {
       register(input: $input) {
         token
+        user {
+          id
+        }
       }
     }
     `;
@@ -43,6 +46,16 @@ export async function POST(request: NextRequest) {
     cookieStore.set({
       name: TOKEN_STORE_LOCATION,
       value: token,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7, // 1 week
+    });
+
+    cookieStore.set({
+      name: USERID_STORE_LOCATION,
+      value: result.data.register.user.id,
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",

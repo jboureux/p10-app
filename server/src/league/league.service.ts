@@ -4,10 +4,10 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { PubSub } from 'graphql-subscriptions';
+import ShortUniqueId from 'short-unique-id';
 import { PrismaService } from '../prisma.service';
 import { CreateLeagueInput } from './dto/create-league.input';
-import { v4 as uuidv4 } from 'uuid';
-import { PubSub } from 'graphql-subscriptions';
 
 @Injectable()
 export class LeagueService {
@@ -17,7 +17,8 @@ export class LeagueService {
   ) {}
 
   async create(createLeagueInput: CreateLeagueInput, creatorId: string) {
-    const sharedLink = uuidv4();
+    const { randomUUID } = new ShortUniqueId({ length: 6 });
+    const sharedLink = randomUUID().toUpperCase();
 
     const league = await this.prisma.league.create({
       data: {
@@ -135,6 +136,21 @@ export class LeagueService {
 
   async getAllLeagues() {
     return this.prisma.league.findMany({
+      include: {
+        userLeague: {
+          include: {
+            user: true, // optionnel si tu veux les infos du user
+          },
+        },
+      },
+    });
+  }
+
+  async getLeague(id: string) {
+    return this.prisma.league.findUnique({
+      where: {
+        id: id,
+      },
       include: {
         userLeague: {
           include: {
