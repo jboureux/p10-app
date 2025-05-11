@@ -8,9 +8,9 @@ import LeagueCode from "./_components/LeagueCode";
 import OtherPlayers from "./_components/OtherPlayers";
 
 interface LeagueRankingPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 const LeagueRankingPage = async (props: LeagueRankingPageProps) => {
