@@ -1,25 +1,17 @@
-import {
-  Resolver,
-  Mutation,
-  Args,
-  Query,
-  Subscription,
-  Root,
-} from '@nestjs/graphql';
+import { UseGuards } from '@nestjs/common';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { CurrentUser } from 'src/common/decorators/current-user.decorator';
+import { UserFromJwt } from 'src/common/types/user-from-jwt.interface';
 import { League } from '../entities/league.entity';
 import { CreateLeagueInput } from './dto/create-league.input';
 import { LeagueService } from './league.service';
-import { CurrentUser } from 'src/common/decorators/current-user.decorator';
-import { UserFromJwt } from 'src/common/types/user-from-jwt.interface';
-import { Inject, UseGuards } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { PubSub } from 'graphql-subscriptions';
 
 @Resolver(() => League)
 export class LeagueResolver {
   constructor(
     private readonly leagueService: LeagueService,
-    @Inject('PUB_SUB') private readonly pubSub: PubSub,
+    // @Inject('PUB_SUB') private readonly pubSub: PubSub,
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -67,9 +59,16 @@ export class LeagueResolver {
     return this.leagueService.getMyLeagues(user.userId);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Query(() => [League])
   getAllLeagues() {
     return this.leagueService.getAllLeagues();
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Query(() => League)
+  league(@Args('id') id: string) {
+    return this.leagueService.getLeague(id);
   }
 
   // @Subscription(() => String, {

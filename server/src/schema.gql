@@ -131,6 +131,7 @@ type PiloteEcurie {
 type Query {
   getAllLeagues: [League!]!
   isLogged: Boolean!
+  league(id: String!): League!
   myLeagues: [League!]!
   pendingRequestsByLeague(leagueId: String!): [JoinRequest!]!
   user(id: String!): User!

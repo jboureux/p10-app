@@ -1,35 +1,42 @@
-"use client";
+// "use client";
 
-import { useState } from "react";
+// import { useState } from "react";
 
-import CreateModal from "./_components/CreateModal";
-import JoinModal from "./_components/JoinModal";
+// import CreateModal from "./_components/CreateModal";
+// import JoinModal from "./_components/JoinModal";
+import { callAPI } from "@/lib/api-client";
+import { retrieveToken } from "@/lib/auth-server";
+import { GqlError } from "@/types/errors";
+import { MyLeaguesResponse } from "@/types/leagues";
 import LeagueList from "./_components/LeagueList";
+import LeagueModals from "./_components/LeagueModals";
 
-export default function LeaguePage() {
-  const [showCreateModal, setShowCreateModal] = useState(false);
-  const [showJoinModal, setShowJoinModal] = useState(false);
+export default async function LeaguePage() {
+  const query = `
+  query MyLeagues {
+    myLeagues {
+      id
+      isActive
+      isPrivate
+      name
+      user_league {
+        id
+      }
+    }
+  }
+  `;
 
-  // TODO: Fetch users teams from the API
-  const teams = [
-    { id: "1", icon: "", name: "Super équipe 1", members: 9 },
-    { id: "2", icon: "", name: "Super équipe 2", members: 9 },
-    { id: "3", icon: "", name: "Super équipe 3", members: 9 },
-  ];
+  const result: MyLeaguesResponse & GqlError = await callAPI<MyLeaguesResponse>(
+    {
+      query: query,
+      token: await retrieveToken(),
+    }
+  );
 
   return (
     <div className="min-h-screen bg-[#EEF3F6] pb-24 md:pb-0">
-      <LeagueList
-        teams={teams}
-        setShowCreateModal={setShowCreateModal}
-        setShowJoinModal={setShowJoinModal}
-      />
-
-      {showCreateModal && (
-        <CreateModal setShowCreateModal={setShowCreateModal} />
-      )}
-
-      {showJoinModal && <JoinModal setShowJoinModal={setShowJoinModal} />}
+      <LeagueList teams={result.data.myLeagues} />
+      <LeagueModals />
     </div>
   );
 }
