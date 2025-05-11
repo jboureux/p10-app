@@ -36,8 +36,8 @@ const LeagueRankingPage = async (props: LeagueRankingPageProps) => {
     }
   }
   `;
-
-  const variables = { leagueId: (await props.params).id };
+  const leagueParams = await props.params;
+  const variables = { leagueId: leagueParams.id };
 
   const result: LeagueResponse & GqlError = await callAPI<LeagueResponse>({
     query: query,
