@@ -1,8 +1,9 @@
+import { redirect } from "next/navigation";
+
 import { callAPI } from "@/lib/api-client";
 import { retrieveToken } from "@/lib/auth-server";
 import { GqlError } from "@/types/errors";
 import { LeagueResponse } from "@/types/leagues";
-import { redirect } from "next/navigation";
 import Header from "./_components/Header";
 import LeagueCode from "./_components/LeagueCode";
 import OtherPlayers from "./_components/OtherPlayers";
