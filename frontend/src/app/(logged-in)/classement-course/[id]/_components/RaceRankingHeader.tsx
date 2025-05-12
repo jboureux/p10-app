@@ -1,8 +1,8 @@
 "use client";
 
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
-import RacePodium from "./RacePodium";
+import { Podium } from "@/components/ui";
 
 interface HeaderProps {
   raceCountry: string;
@@ -23,6 +23,12 @@ export default function RaceRankingHeader({
 }: HeaderProps) {
   const router = useRouter();
 
+  const items = podiumPilotes.map((player, index) => ({
+    id: `${index}-${player.driver}`,
+    label: player.driver,
+    points: player.points,
+  }));
+
   return (
     <div className="relative bg-gradient-to-br from-black to-red-700 text-white pt-6 md:pt-10 rounded-b-3xl">
       <button
@@ -34,8 +40,7 @@ export default function RaceRankingHeader({
       <h1 className="text-center text-2xl md:text-3xl font-mono">
         {raceCountry}
       </h1>
-
-      <RacePodium podiumPilotes={podiumPilotes} />
+      <Podium items={items} />
     </div>
   );
 }

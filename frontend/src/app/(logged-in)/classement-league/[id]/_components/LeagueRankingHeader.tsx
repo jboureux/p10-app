@@ -2,9 +2,9 @@
 
 import { useRouter } from "next/navigation";
 
-import PodiumPlayers from "./PodiumPlayers";
+import { Podium } from "@/components/ui";
 
-interface HeaderProps {
+interface LeagueRankingHeaderProps {
   teamName: string;
   podiumPlayers: Array<{
     isAdmin: boolean;
@@ -13,8 +13,17 @@ interface HeaderProps {
   }>;
 }
 
-export default function Header({ teamName, podiumPlayers }: HeaderProps) {
+export default function LeagueRankingHeader({
+  teamName,
+  podiumPlayers,
+}: LeagueRankingHeaderProps) {
   const router = useRouter();
+
+  const items = podiumPlayers.map((player, index) => ({
+    id: `${index}-${player.fullName}`,
+    label: player.fullName,
+    points: player.points,
+  }));
 
   return (
     <div className="relative bg-gradient-to-br from-black to-red-700 text-white pt-6 md:pt-10 rounded-b-3xl">
@@ -25,8 +34,7 @@ export default function Header({ teamName, podiumPlayers }: HeaderProps) {
         &lt;
       </button>
       <h1 className="text-center text-2xl md:text-3xl font-mono">{teamName}</h1>
-
-      <PodiumPlayers podiumPlayers={podiumPlayers} />
+      <Podium items={items} />
     </div>
   );
 }

@@ -1,13 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui";
 import { AUTH_REDIRECT_PATH } from "@/config/auth";
 import { useAuth } from "@/hooks/useAuth";
 import { RegisterRequest } from "@/types/auth";
-import { useRouter } from "next/navigation";
 
 export default function SignUpForm() {
   const {
@@ -33,28 +33,28 @@ export default function SignUpForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
       <div>
-        <label htmlFor="firstName" className="block text-sm mb-1">
+        <label htmlFor="firstname" className="block text-sm mb-1">
           Prénom
         </label>
         <input
-          id="firstName"
+          id="firstname"
           type="text"
           placeholder="Ton prénom"
           className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none"
-          {...register("firstName")}
+          {...register("firstname")}
         />
       </div>
 
       <div>
-        <label htmlFor="lastName" className="block text-sm mb-1">
+        <label htmlFor="lastname" className="block text-sm mb-1">
           Nom
         </label>
         <input
-          id="lastName"
+          id="lastname"
           type="text"
           placeholder="Ton nom"
           className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none"
-          {...register("lastName")}
+          {...register("lastname")}
         />
       </div>
 

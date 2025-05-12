@@ -4,6 +4,7 @@ import { useParams } from "next/navigation";
 
 import RaceRankingHeader from "./_components/RaceRankingHeader";
 import RaceRanking from "./_components/RaceRanking";
+import { raceRakingPointDistribution } from "@/config/race-ranking-point-distribution";
 
 export default function RaceRankingPage() {
   const params = useParams();
@@ -181,33 +182,9 @@ export default function RaceRankingPage() {
     return parseInt(a.position) - parseInt(b.position);
   });
 
-  const pointByPosition: { [key: string]: number } = {
-    "1": 1,
-    "2": 2,
-    "3": 4,
-    "4": 6,
-    "5": 8,
-    "6": 10,
-    "7": 12,
-    "8": 15,
-    "9": 18,
-    "10": 25,
-    "11": 18,
-    "12": 15,
-    "13": 12,
-    "14": 10,
-    "15": 8,
-    "16": 6,
-    "17": 4,
-    "18": 2,
-    "19": 1,
-    "20": 1,
-    "not classified": 0,
-  };
-
   const raceResultWithPoints = raceResult.map((driver) => ({
     ...driver,
-    points: pointByPosition[driver.position] ?? 0,
+    points: raceRakingPointDistribution[driver.position] ?? 0,
   }));
 
   const podiumPilote = raceResultWithPoints.slice(0, 3);
