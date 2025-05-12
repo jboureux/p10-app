@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { JoinRequestModule } from './join-request/join-request.module';
 import { LeagueModule } from './league/league.module';
 import { UsersModule } from './users/users.module';
+import { BetSelectionResultModule } from './bet-selection-result/bet-selection-result.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { UsersModule } from './users/users.module';
     JoinRequestModule,
     LeagueModule,
     AuthModule,
+    BetSelectionResultModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET || 'dev-secret',
     }),
