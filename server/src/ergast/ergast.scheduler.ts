@@ -15,20 +15,7 @@ export class ErgastScheduler {
   async handleErgastCron() {
     console.log('🕛 [Ergast Cron] Lancement de l’import des résultats');
 
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-
-    const season = yesterday.getFullYear().toString();
-    const round = await this.ergastService.getLatestRoundForDate(
-      season,
-      yesterday,
-    );
-
-    if (round) {
-      await this.ergastImporter.importRaceResults(season, round);
-    } else {
-      console.warn('⚠️ Aucun round trouvé pour la date d’hier');
-    }
+    await this.import();
 
     console.log('✅ [Ergast Cron] Fin de l’import');
   }
@@ -36,6 +23,12 @@ export class ErgastScheduler {
   async testManualImport() {
     console.log('🧪 [Test Manuel] Lancement de l’import Ergast');
 
+    await this.import();
+
+    console.log('✅ [Test Manuel] Fin de l’import');
+  }
+
+  async import() {
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
 
@@ -50,7 +43,5 @@ export class ErgastScheduler {
     } else {
       console.warn('⚠️ Aucun round trouvé pour la date d’hier');
     }
-
-    console.log('✅ [Test Manuel] Fin de l’import');
   }
 }

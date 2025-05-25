@@ -1,12 +1,13 @@
+import { User } from "@/types/users";
+import DeleteAccountContainer from "./DeleteAccountContainer";
 import ProfileHeader from "./ProfileHeader";
 import UpdateProfileForm from "./UpdateProfileForm";
-import DeleteAccountContainer from "./DeleteAccountContainer";
 
-export default function Profile() {
+export default function Profile({ user }: { user: User }) {
   return (
     <>
       <ProfileHeader />
-      <UpdateProfileForm />
+      <UpdateProfileForm user={user} />
       <DeleteAccountContainer />
     </>
   );
