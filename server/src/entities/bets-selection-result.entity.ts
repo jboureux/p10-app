@@ -14,9 +14,9 @@ export class BetsSelectionResult {
   @Field(() => User)
   user: User;
 
-  @Field(() => GrandPrix)
-  grand_prix: GrandPrix;
+  @Field(() => GrandPrix, { name: 'grand_prix' })
+  grandPrix: GrandPrix;
 
-  @Field(() => GrandPrixPilote)
-  grand_prix_pilote: GrandPrixPilote;
+  @Field(() => GrandPrixPilote, { name: 'grand_prix_pilote' })
+  grandPrixPilote: GrandPrixPilote;
 }

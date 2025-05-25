@@ -15,6 +15,11 @@ type BetsSelectionResult {
   user: User!
 }
 
+input CreateBetSelectionResultInput {
+  grandPrixId: ID!
+  grandPrixPiloteId: ID!
+}
+
 input CreateJoinRequestInput {
   leagueId: ID!
 }
@@ -45,7 +50,7 @@ type GrandPrix {
   date: String!
 
   """ID get with API Races"""
-  id_api_races: Int!
+  id_api_races: String!
 
   """Grand Prix Season"""
   season: String!
@@ -100,6 +105,7 @@ input LoginInput {
 }
 
 type Mutation {
+  create(input: CreateBetSelectionResultInput!): BetsSelectionResult!
   createJoinRequest(input: CreateJoinRequestInput!): JoinRequest!
   createLeague(input: CreateLeagueInput!): League!
   deleteLeague(leagueId: String!): Boolean!
@@ -109,6 +115,7 @@ type Mutation {
   logout: Boolean!
   register(input: RegisterInput!): AuthResponse!
   removeUser(id: String!): User!
+  update(input: UpdateBetSelectionResultInput!): BetsSelectionResult!
   updateJoinRequestStatus(input: UpdateJoinRequestStatusInput!): JoinRequest!
   updateUser(updateUserInput: UpdateUserInput!): User!
 }
@@ -166,6 +173,11 @@ type Track {
 
   """Name of the track"""
   track_name: String!
+}
+
+input UpdateBetSelectionResultInput {
+  pointP10: Float!
+  userId: ID!
 }
 
 input UpdateJoinRequestStatusInput {
