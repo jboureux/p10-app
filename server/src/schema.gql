@@ -40,11 +40,11 @@ type Ecurie {
   idApiEcurie: ID!
   logo: String!
   name: String!
-  pilote_ecurie: [PiloteEcurie!]
+  pilote_ecurie: [PiloteEcurie!]!
 }
 
 type GrandPrix {
-  bets_selection_result: BetsSelectionResult
+  bets_selection_result: BetsSelectionResult!
 
   """Grand Prix date"""
   date: String!
@@ -70,7 +70,7 @@ type GrandPrixClassement {
 type GrandPrixPilote {
   ecurie: Ecurie!
   grand_prix: GrandPrix!
-  grand_prix_classement: [GrandPrixClassement!]
+  grand_prix_classement: [GrandPrixClassement!]!
   id: ID!
   pilote: Pilote!
 }
@@ -96,7 +96,7 @@ type League {
   isPrivate: Boolean!
   name: String!
   sharedLink: String!
-  user_league: [UserLeague!]
+  user_league: [UserLeague!]!
 }
 
 input LoginInput {
@@ -126,7 +126,7 @@ type Pilote {
   name: String!
   name_acronym: String!
   picture: String!
-  pilote_ecurie: [PiloteEcurie!]
+  pilote_ecurie: [PiloteEcurie!]!
 }
 
 type PiloteEcurie {
@@ -161,7 +161,7 @@ type Subscription {
 type Track {
   """Name of the country where race is running"""
   country_name: Int!
-  grand_prix: [GrandPrix!]
+  grand_prix: [GrandPrix!]!
 
   """ID get with Api Tracks"""
   id_api_tracks: String!
@@ -205,14 +205,14 @@ input UpdateUserInput {
 }
 
 type User {
-  api_avatar_id: String
-  bets_selection_results: [BetsSelectionResult!]
+  api_avatar_id: String!
+  bets_selection_results: [BetsSelectionResult!]!
   email: String!
-  firstname: String
+  firstname: String!
   id: ID!
-  lastname: String
+  lastname: String!
   role: String!
-  user_league: [UserLeague!]
+  user_league: [UserLeague!]!
 }
 
 type UserLeague {

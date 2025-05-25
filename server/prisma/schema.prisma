@@ -30,7 +30,7 @@ model League {
   isActive    Boolean @map("is_active")
   apiAvatarId String  @map("api_avatar_id")
 
-  userLeague UserLeague[]
+  userLeague   UserLeague[]
   joinRequests JoinRequest[]
 }
 
@@ -51,7 +51,8 @@ model Ecurie {
   logo        String
   color       String
 
-  pilotesEcurie PiloteEcurie[]
+  pilotesEcurie   PiloteEcurie[]
+  GrandPrixPilote GrandPrixPilote[]
 }
 
 model Pilote {
@@ -60,7 +61,8 @@ model Pilote {
   picture     String
   nameAcronym String @map("name_acronym")
 
-  pilotesEcurie PiloteEcurie[]
+  pilotesEcurie   PiloteEcurie[]
+  GrandPrixPilote GrandPrixPilote[]
 }
 
 model PiloteEcurie {
@@ -84,13 +86,15 @@ model GrandPrix {
 
   betsSelectionResults BetsSelectionResults[]
   grandPrixClassement  GrandPrixClassement[]
+  GrandPrixPilote      GrandPrixPilote[]
 }
 
 model GrandPrixClassement {
-  id                String @id @unique @default(uuid())
-  idGrandPrix       String @map("id_grand_prix")
-  idGrandPrixPilote String @map("id_grand_prix_pilote")
-  position          Int
+  id                String  @id @unique @default(uuid())
+  idGrandPrix       String  @map("id_grand_prix")
+  idGrandPrixPilote String  @map("id_grand_prix_pilote")
+  position          Int?
+  isDnf             Boolean @default(false) @map("is_dnf")
 
   grandPrix       GrandPrix       @relation(fields: [idGrandPrix], references: [idApiRaces])
   grandPrixPilote GrandPrixPilote @relation(fields: [idGrandPrixPilote], references: [id])
@@ -102,6 +106,9 @@ model GrandPrixPilote {
   idPilote    String @map("id_pilote")
   idEcurie    String @map("id_ecurie")
 
+  grandPrix            GrandPrix              @relation(fields: [idGrandPrix], references: [idApiRaces])
+  pilote               Pilote                 @relation(fields: [idPilote], references: [idApiPilote])
+  ecurie               Ecurie                 @relation(fields: [idEcurie], references: [idApiEcurie])
   GrandPrixClassement  GrandPrixClassement[]
   BetsSelectionResults BetsSelectionResults[]
 }
@@ -129,11 +136,11 @@ model Track {
 }
 
 model JoinRequest {
-  id        String   @id @unique @default(uuid())
-  userId    String   @map("user_id")
-  leagueId  String   @map("league_id")
+  id        String            @id @unique @default(uuid())
+  userId    String            @map("user_id")
+  leagueId  String            @map("league_id")
   status    JoinRequestStatus @default(PENDING)
-  createdAt DateTime @default(now())
+  createdAt DateTime          @default(now())
 
   user   User   @relation(fields: [userId], references: [id])
   league League @relation(fields: [leagueId], references: [id], onDelete: Cascade)
@@ -144,7 +151,6 @@ enum JoinRequestStatus {
   ACCEPTED
   REFUSED
 }
-
 
 model BlacklistedToken {
   id        Int      @id @default(autoincrement())

@@ -4,24 +4,27 @@ import { ApolloDriver } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { JwtModule, JwtService } from '@nestjs/jwt';
+import { ScheduleModule } from '@nestjs/schedule';
 import { join } from 'node:path';
 import { AuthModule } from './auth/auth.module';
 import { BetSelectionResultModule } from './bet-selection-result/bet-selection-result.module';
+import { ErgastModule } from './ergast/ergast.module';
+import { F1ApiModule } from './f1-api/f1-api.module';
 import { JoinRequestModule } from './join-request/join-request.module';
 import { LeagueModule } from './league/league.module';
-import { OpenF1Module } from './openf1/openf1.module';
 import { UsersModule } from './users/users.module';
-import { ErgastModule } from './ergast/ergast.module';
 
 @Module({
   imports: [
-    UsersModule,
-    JoinRequestModule,
-    LeagueModule,
-    AuthModule,
-    BetSelectionResultModule,
-    OpenF1Module,
+    ScheduleModule.forRoot(),
     ErgastModule,
+    F1ApiModule,
+    AuthModule,
+    UsersModule,
+    LeagueModule,
+    JoinRequestModule,
+    BetSelectionResultModule,
+    PubSubModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET || 'dev-secret',
     }),
@@ -61,33 +64,6 @@ import { ErgastModule } from './ergast/ergast.module';
             }
             return { req };
           },
-          // subscriptions: {
-          //   'graphql-ws': {
-          //     onConnect: async (ctx) => {
-          //       const raw =
-          //         ctx.connectionParams?.Authorization ||
-          //         ctx.connectionParams?.authorization;
-          //       const token =
-          //         typeof raw === 'string' ? raw.replace('Bearer ', '') : '';
-
-          //       console.log('>> WebSocket connected with token:', token);
-
-          //       if (!token) return {};
-
-          //       const decoded = jwtService.verify(token);
-          //       console.log('>> Decoded user:', decoded);
-
-          //       // ✅ On injecte directement dans le context WebSocket
-          //       return {
-          //         user: {
-          //           userId: decoded.sub,
-          //           email: decoded.email,
-          //           role: decoded.role,
-          //         },
-          //       };
-          //     },
-          //   },
-          // },
           formatError: (error) => {
             const originalError = error.extensions?.originalError as Error;
 

@@ -19,8 +19,8 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "seed:openf1": "ts-node -r tsconfig-paths/register src/run-cron.ts",
-    "seed:ergast": "ts-node -r tsconfig-paths/register src/run-ergast-cron.ts"
+    "seed:ergast": "ts-node -r tsconfig-paths/register src/run-ergast-complete-cron.ts",
+    "seed:f1": "ts-node -r tsconfig-paths/register scripts/test-f1-api-with-dnf.ts"
   },
   "dependencies": {
     "@apollo/server": "^4.11.3",
