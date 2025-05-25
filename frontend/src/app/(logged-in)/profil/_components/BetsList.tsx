@@ -1,23 +1,30 @@
-export default function BetsList() {
-  // TODO: fetch users bets
-  const bets = [
-    {
-      id: "1",
-      grandPrix: { country: "Monaco", date: "2024-05-12" },
-      piloteP10: "Charles Leclerc",
-      pointP10: 12,
-      piloteDNF: "Yuki Tsunoda",
-      pointDNF: 0,
-    },
-    {
-      id: "2",
-      grandPrix: { country: "Australie", date: "2024-03-24" },
-      piloteP10: "Fernando Alonso",
-      pointP10: 8,
-      piloteDNF: "Esteban Ocon",
-      pointDNF: 6,
-    },
-  ];
+import { User } from "@/types/users";
+
+export default function BetsList({ user }: { user: User }) {
+  const bets = user.bets_selection_results;
+
+  if (!bets) {
+    return <div>No bets found</div>;
+  }
+
+  // const bets = [
+  //   {
+  //     id: "1",
+  //     grandPrix: { country: "Monaco", date: "2024-05-12" },
+  //     piloteP10: "Charles Leclerc",
+  //     pointP10: 12,
+  //     piloteDNF: "Yuki Tsunoda",
+  //     pointDNF: 0,
+  //   },
+  //   {
+  //     id: "2",
+  //     grandPrix: { country: "Australie", date: "2024-03-24" },
+  //     piloteP10: "Fernando Alonso",
+  //     pointP10: 8,
+  //     piloteDNF: "Esteban Ocon",
+  //     pointDNF: 6,
+  //   },
+  // ];
 
   return (
     <div className="min-h-screen pb-24 px-4 md:px-0">

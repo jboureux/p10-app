@@ -117,6 +117,7 @@ type Mutation {
   removeUser(id: String!): User!
   update(input: UpdateBetSelectionResultInput!): BetsSelectionResult!
   updateJoinRequestStatus(input: UpdateJoinRequestStatusInput!): JoinRequest!
+  updateProfile(updateProfileInput: UpdateProfileInput!): User!
   updateUser(updateUserInput: UpdateUserInput!): User!
 }
 
@@ -185,12 +186,21 @@ input UpdateJoinRequestStatusInput {
   status: JoinRequestStatus!
 }
 
+input UpdateProfileInput {
+  currentPassword: String
+  email: String
+  firstname: String
+  lastname: String
+  newPassword: String
+}
+
 input UpdateUserInput {
   apiAvatarId: String
   email: String
   firstname: String
   id: ID!
   lastname: String
+  password: String
   role: String
 }
 

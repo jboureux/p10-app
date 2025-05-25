@@ -1,22 +1,56 @@
-"use client";
+import { callAPI } from "@/lib/api-client";
+import { retrieveToken, retrieveUserId } from "@/lib/auth-server";
+import { GqlError } from "@/types/errors";
+import { UserResponse } from "@/types/users";
+import ProfileTabs from "./_components/ProfileTabs";
 
-import { useState } from "react";
+export default async function ProfilePage() {
+  const query = `
+    query User($userId: String!) {
+    user(id: $userId) {
+      email
+      firstname
+      lastname
+      bets_selection_results {
+        pointP10
+        grand_prix {
+          date
+          season
+          time
+          track {
+            track_name
+            country_name
+          }
+        }
+        grand_prix_pilote {
+          pilote {
+            name
+            name_acronym
+            pilote_ecurie {
+              ecurie {
+                name
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  `;
 
-import Tabs from "./_components/Tabs";
-import BetsList from "./_components/BetsList";
-import Profile from "./_components/Profile";
+  const userId = await retrieveUserId();
 
-export default function ProfilePage() {
-  const [activeTab, setActiveTab] = useState<"bets" | "profile">("bets");
+  const variables = {
+    userId: userId,
+  };
 
-  return (
-    <div className="bg-[#F5F7F9]">
-      <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
-      <div className="min-h-screen  text-gray-800 flex flex-col md:w-[80vw] lg:w-2/3 mx-auto">
-        {activeTab === "bets" && <BetsList />}
+  const result: UserResponse & GqlError = await callAPI<UserResponse>({
+    query: query,
+    variables: variables,
+    token: await retrieveToken(),
+  });
 
-        {activeTab === "profile" && <Profile />}
-      </div>
-    </div>
-  );
+  console.log(result);
+
+  return <ProfileTabs user={result.data.user} />;
 }
