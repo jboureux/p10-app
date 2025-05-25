@@ -37,7 +37,9 @@ export class OpenF1SeederCronService {
       try {
         console.log(`🔄 Traitement GP : ${meeting.meeting_name}`);
 
-        const alreadyExists = await this.grandPrixService.exists(meeting.meeting_key);
+        const alreadyExists = await this.grandPrixService.exists(
+          meeting.meeting_key,
+        );
         console.log(`📌 GP existe déjà ?`, alreadyExists);
         if (alreadyExists) {
           console.log(`⏭️ GP déjà en base : ${meeting.meeting_name}`);
@@ -47,10 +49,15 @@ export class OpenF1SeederCronService {
         const track = await this.trackService.upsertFromMeeting(meeting);
         console.log(`🛣️ Track inséré ou mis à jour :`, track);
 
-        const grandPrix = await this.grandPrixService.createFromMeeting(meeting, track.idApiTrack);
+        const grandPrix = await this.grandPrixService.createFromMeeting(
+          meeting,
+          track.idApiTrack,
+        );
         console.log(`🏁 Grand Prix inséré :`, grandPrix);
 
-        const sessionKey = await this.openF1Service.getLatestRaceSession(meeting.meeting_key);
+        const sessionKey = await this.openF1Service.getLatestRaceSession(
+          meeting.meeting_key,
+        );
         console.log(`📌 Session key récupéré :`, sessionKey);
 
         const drivers = await this.openF1Service.getDrivers(sessionKey);
@@ -59,35 +66,60 @@ export class OpenF1SeederCronService {
         for (const driver of drivers) {
           const pilote = await this.piloteService.upsert(driver);
           if (!pilote) {
-            console.warn(`❌ Pilote non inséré : ${driver.full_name} (${driver.driver_number})`);
+            console.warn(
+              `❌ Pilote non inséré : ${driver.full_name} (${driver.driver_number})`,
+            );
             continue;
           }
-        
+
           const ecurie = await this.ecurieService.upsert(driver);
           if (!ecurie) {
-            console.warn(`❌ Écurie non insérée pour pilote : ${driver.full_name}`);
+            console.warn(
+              `❌ Écurie non insérée pour pilote : ${driver.full_name}`,
+            );
             continue;
           }
-        
-          console.log(`🚗 Pilote inséré : ${pilote.name} (${pilote.nameAcronym}), 🏎️ Écurie : ${ecurie.name}`);
-        
+
+          console.log(
+            `🚗 Pilote inséré : ${pilote.name} (${pilote.nameAcronym}), 🏎️ Écurie : ${ecurie.name}`,
+          );
+
           try {
-            await this.piloteEcurieService.link(pilote.idApiPilote, ecurie.idApiEcurie, new Date(meeting.date_start));
+            await this.piloteEcurieService.link(
+              pilote.idApiPilote,
+              ecurie.idApiEcurie,
+              new Date(meeting.date_start),
+            );
           } catch (err) {
-            console.warn(`⚠️ Erreur de lien pilote-écurie : ${pilote.name} - ${ecurie.name}`, err);
+            console.warn(
+              `⚠️ Erreur de lien pilote-écurie : ${pilote.name} - ${ecurie.name}`,
+              err,
+            );
           }
-        
+
           try {
-            await this.grandPrixPiloteService.create(grandPrix.idApiRaces, pilote.idApiPilote, ecurie.idApiEcurie);
-            console.log(`✅ Lien GP-Pilote créé : ${pilote.nameAcronym} → ${grandPrix.season}`);
+            await this.grandPrixPiloteService.create(
+              grandPrix.idApiRaces,
+              pilote.idApiPilote,
+              ecurie.idApiEcurie,
+            );
+            console.log(
+              `✅ Lien GP-Pilote créé : ${pilote.nameAcronym} → ${grandPrix.season}`,
+            );
           } catch (err) {
-            console.warn(`⚠️ Erreur de lien GP-Pilote : ${pilote.nameAcronym}`, err);
+            console.warn(
+              `⚠️ Erreur de lien GP-Pilote : ${pilote.nameAcronym}`,
+              err,
+            );
           }
         }
 
         console.log(`🎉 GP traité avec succès : ${meeting.meeting_name}`);
       } catch (error) {
-        console.error(`🚨 Erreur pendant le traitement du GP ${meeting.meeting_name}`, error);
+        console.error(
+          `🚨 Erreur pendant le traitement du GP ${meeting.meeting_name}`,
+          error,
+        );
       }
     }
 

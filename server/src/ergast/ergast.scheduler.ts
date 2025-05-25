@@ -19,7 +19,10 @@ export class ErgastScheduler {
     yesterday.setDate(yesterday.getDate() - 1);
 
     const season = yesterday.getFullYear().toString();
-    const round = await this.ergastService.getLatestRoundForDate(season, yesterday);
+    const round = await this.ergastService.getLatestRoundForDate(
+      season,
+      yesterday,
+    );
 
     if (round) {
       await this.ergastImporter.importRaceResults(season, round);
@@ -30,7 +33,6 @@ export class ErgastScheduler {
     console.log('✅ [Ergast Cron] Fin de l’import');
   }
 
-
   async testManualImport() {
     console.log('🧪 [Test Manuel] Lancement de l’import Ergast');
 
@@ -38,7 +40,10 @@ export class ErgastScheduler {
     yesterday.setDate(yesterday.getDate() - 1);
 
     const season = yesterday.getFullYear().toString();
-    const round = await this.ergastService.getLatestRoundForDate(season, yesterday);
+    const round = await this.ergastService.getLatestRoundForDate(
+      season,
+      yesterday,
+    );
 
     if (round) {
       await this.ergastImporter.importRaceResults(season, round);
@@ -49,4 +54,3 @@ export class ErgastScheduler {
     console.log('✅ [Test Manuel] Fin de l’import');
   }
 }
-

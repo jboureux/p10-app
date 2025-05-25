@@ -5,7 +5,6 @@ import { PrismaService } from '../../prisma.service';
 export class PiloteEcurieService {
   constructor(private readonly prisma: PrismaService) {}
 
-
   async link(piloteId: string, ecurieId: string, date: Date) {
     const id = `${piloteId}-${ecurieId}-${date.getFullYear()}`;
 

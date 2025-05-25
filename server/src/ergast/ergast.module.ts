@@ -7,7 +7,12 @@ import { ErgastScheduler } from './ergast.scheduler';
 
 @Module({
   imports: [HttpModule],
-  providers: [ErgastService, ErgastImporterService, PrismaService,ErgastScheduler],
+  providers: [
+    ErgastService,
+    ErgastImporterService,
+    PrismaService,
+    ErgastScheduler,
+  ],
   exports: [ErgastImporterService],
 })
 export class ErgastModule {}

@@ -5,7 +5,6 @@ import { PrismaService } from '../../prisma.service';
 export class GrandPrixPiloteService {
   constructor(private readonly prisma: PrismaService) {}
 
-  
   async create(gpId: string, piloteId: string, ecurieId: string) {
     const id = `${gpId}-${piloteId}-${ecurieId}`;
 

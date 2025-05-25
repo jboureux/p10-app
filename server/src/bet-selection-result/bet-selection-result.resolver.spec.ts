@@ -1,5 +1,4 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { BetSelectionResultResolver } from './bet-selection-result.resolver';
 import { BetsSelectionResultService } from './bet-selection-result.service';
 
 class TestBetSelectionResultResolver {

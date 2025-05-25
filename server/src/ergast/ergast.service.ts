@@ -7,18 +7,28 @@ import { firstValueFrom } from 'rxjs';
 export class ErgastService {
   constructor(private readonly http: HttpService) {}
 
-  async getRaceResults(season: string, round: string): Promise<{ results: any[], date: string }> {
+  async getRaceResults(
+    season: string,
+    round: string,
+  ): Promise<{ results: any[]; date: string }> {
     const url = `https://api.jolpi.ca/ergast/f1/${season}/${round}/results.json`;
-    const response = await firstValueFrom(this.http.get(url)) as { data: any };
+    const response = (await firstValueFrom(this.http.get(url))) as {
+      data: any;
+    };
     const race = response.data?.MRData?.RaceTable?.Races?.[0];
     return {
       results: race?.Results || [],
-      date: race?.date, 
+      date: race?.date,
     };
   }
-  async getLatestRoundForDate(season: string, targetDate: Date): Promise<string | null> {
+  async getLatestRoundForDate(
+    season: string,
+    targetDate: Date,
+  ): Promise<string | null> {
     const url = `https://api.jolpi.ca/ergast/f1/${season}.json`;
-    const response = await firstValueFrom(this.http.get(url)) as { data: any };
+    const response = (await firstValueFrom(this.http.get(url))) as {
+      data: any;
+    };
     const races = response.data?.MRData?.RaceTable?.Races || [];
 
     const found = races.find((race: any) => {

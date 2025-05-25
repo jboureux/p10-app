@@ -11,7 +11,10 @@ export class ErgastImporterService {
   ) {}
 
   async importRaceResults(season: string, round: string) {
-    const { results, date } = await this.ergastService.getRaceResults(season, round);
+    const { results, date } = await this.ergastService.getRaceResults(
+      season,
+      round,
+    );
 
     if (!results.length || !date) {
       console.warn('❌ Aucun résultat ou date invalide');
@@ -22,7 +25,7 @@ export class ErgastImporterService {
     const startOfPrevDay = new Date(searchDate);
     startOfPrevDay.setUTCDate(startOfPrevDay.getUTCDate() - 1);
     startOfPrevDay.setUTCHours(0, 0, 0, 0);
-    
+
     const endOfNextDay = new Date(searchDate);
     endOfNextDay.setUTCDate(endOfNextDay.getUTCDate() + 1);
     endOfNextDay.setUTCHours(23, 59, 59, 999);
@@ -31,8 +34,8 @@ export class ErgastImporterService {
       where: {
         season,
         date: {
-            gte: startOfPrevDay,
-            lte: endOfNextDay,
+          gte: startOfPrevDay,
+          lte: endOfNextDay,
         },
       },
     });
@@ -43,17 +46,17 @@ export class ErgastImporterService {
     }
 
     for (const result of results) {
-        const acronym = result.Driver.code; // Exemple : "VER"
-        console.log(`⏳ Traitement de ${acronym} (position: ${result.position})`);
-      
-        const pilote = await this.prisma.pilote.findFirst({
-          where: { nameAcronym: acronym },
-        });
-      
-        if (!pilote) {
-          console.warn(`❌ Pilote non trouvé: ${acronym}`);
-          continue;
-        }
+      const acronym = result.Driver.code; // Exemple : "VER"
+      console.log(`⏳ Traitement de ${acronym} (position: ${result.position})`);
+
+      const pilote = await this.prisma.pilote.findFirst({
+        where: { nameAcronym: acronym },
+      });
+
+      if (!pilote) {
+        console.warn(`❌ Pilote non trouvé: ${acronym}`);
+        continue;
+      }
 
       const gpPilote = await this.prisma.grandPrixPilote.findFirst({
         where: {
@@ -81,7 +84,9 @@ export class ErgastImporterService {
           where: { id: classement.id },
           data: { position },
         });
-        console.log(`✅ Mis à jour de la position pour ${acronym}: ${position}`);
+        console.log(
+          `✅ Mis à jour de la position pour ${acronym}: ${position}`,
+        );
       } else {
         await this.prisma.grandPrixClassement.create({
           data: {

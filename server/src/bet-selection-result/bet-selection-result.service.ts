@@ -1,4 +1,9 @@
-import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { CreateBetSelectionResultInput } from './dto/create-bet-selection-result';
 import { UpdateBetSelectionResultInput } from './dto/update-bet-selection-result';
@@ -9,21 +14,20 @@ export class BetsSelectionResultService {
 
   async create(userId: string, input: CreateBetSelectionResultInput) {
     try {
-      
       const grandPrix = await this.prisma.grandPrix.findUnique({
         where: { idApiRaces: input.grandPrixId },
       });
       if (!grandPrix) {
-        throw new NotFoundException("Grand Prix introuvable.");
+        throw new NotFoundException('Grand Prix introuvable.');
       }
-  
+
       const grandPrixPilote = await this.prisma.grandPrixPilote.findUnique({
         where: { id: input.grandPrixPiloteId },
       });
       if (!grandPrixPilote) {
-        throw new NotFoundException("Grand Prix Pilote introuvable.");
+        throw new NotFoundException('Grand Prix Pilote introuvable.');
       }
-  
+
       return await this.prisma.betsSelectionResults.create({
         data: {
           pointP10: 0,
@@ -39,12 +43,17 @@ export class BetsSelectionResultService {
       });
     } catch (error) {
       console.error('Erreur lors de la création du pari:', error);
-  
-      if (error instanceof NotFoundException || error instanceof ConflictException) {
+
+      if (
+        error instanceof NotFoundException ||
+        error instanceof ConflictException
+      ) {
         throw error;
       }
-  
-      throw new BadRequestException('Erreur inattendue lors de la création du pari.');
+
+      throw new BadRequestException(
+        'Erreur inattendue lors de la création du pari.',
+      );
     }
   }
 

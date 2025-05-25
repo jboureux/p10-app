@@ -14,7 +14,7 @@ export class TrackService {
         countryName: meeting.country_name,
         trackName: meeting.circuit_short_name,
         pictureCountry: '', // à compléter si tu as des assets
-        pictureTrack: '',   // idem
+        pictureTrack: '', // idem
       },
     });
   }

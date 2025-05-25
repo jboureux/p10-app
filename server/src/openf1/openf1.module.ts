@@ -1,4 +1,4 @@
-import { Module} from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
 import { OpenF1Service } from './openf1.service';
 import { OpenF1SeederCronService } from './openf1.cron';
