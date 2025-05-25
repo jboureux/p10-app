@@ -7,12 +7,24 @@ import {
 import { PrismaService } from '../prisma.service';
 import { CreateBetSelectionResultInput } from './dto/create-bet-selection-result';
 import { UpdateBetSelectionResultInput } from './dto/update-bet-selection-result';
+import { BetSelectionResult } from '@prisma/client';
 
 @Injectable()
-export class BetsSelectionResultService {
+export class BetSelectionResultService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(userId: string, input: CreateBetSelectionResultInput) {
+    const existingBet = await this.prisma.betSelectionResult.findFirst({
+      where: {
+        userId: userId,
+        grandPrix: { idApiRaces: input.grandPrixId },
+      },
+    });
+
+    if (existingBet) {
+      throw new ConflictException('User has already bet on this Grand Prix.');
+    }
+
     try {
       const grandPrix = await this.prisma.grandPrix.findUnique({
         where: { idApiRaces: input.grandPrixId },
@@ -28,7 +40,7 @@ export class BetsSelectionResultService {
         throw new NotFoundException('Grand Prix Pilote introuvable.');
       }
 
-      return await this.prisma.betsSelectionResults.create({
+      return await this.prisma.betSelectionResult.create({
         data: {
           pointP10: 0,
           user: { connect: { id: userId } },
@@ -55,14 +67,5 @@ export class BetsSelectionResultService {
         'Erreur inattendue lors de la création du pari.',
       );
     }
-  }
-
-  async update(userId: string, input: UpdateBetSelectionResultInput) {
-    return this.prisma.betsSelectionResults.update({
-      where: { id: userId },
-      data: {
-        pointP10: input.pointP10,
-      },
-    });
   }
 }

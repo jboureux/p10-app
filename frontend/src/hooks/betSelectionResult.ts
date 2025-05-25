@@ -1,6 +1,6 @@
 import { callAPI } from "../lib/api-client";
 import {
-  CreateBetsSelectionResults,
+  CreateBetSelectionResults,
   UpdateBetSelectionResult,
 } from "@/types/bets";
 
@@ -11,7 +11,7 @@ class BetSelectionResultHelper {
     this.apiService = callAPI;
   }
 
-  create = async (data: CreateBetsSelectionResults) => {
+  create = async (data: CreateBetSelectionResults) => {
     await fetch("/api/bet-selection-result", {
       method: "POST",
       headers: {
