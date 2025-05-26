@@ -28,3 +28,9 @@ export interface AllGrandPrixResponse {
     allGrandPrix: Array<Partial<GrandPrix>>;
   };
 }
+
+export interface NextGrandPrixResponse {
+  data: {
+    nextGrandPrix: Partial<GrandPrix>;
+  };
+}

@@ -20,4 +20,9 @@ export class GrandPrixResolver {
   async findPast() {
     return this.grandPrixService.findPast();
   }
+
+  @Query(() => GrandPrix, { name: 'nextGrandPrix', nullable: true })
+  async findNext() {
+    return this.grandPrixService.findNext();
+  }
 }

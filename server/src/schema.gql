@@ -143,6 +143,7 @@ type Query {
   isLogged: Boolean!
   league(id: String!): League!
   myLeagues: [League!]!
+  nextGrandPrix: GrandPrix
   pastGrandPrix: [GrandPrix!]!
   pendingRequestsByLeague(leagueId: String!): [JoinRequest!]!
   upcomingGrandPrix: [GrandPrix!]!

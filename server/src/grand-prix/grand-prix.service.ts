@@ -76,4 +76,23 @@ export class GrandPrixService {
 
     return grandPrix;
   }
+
+  async findNext(): Promise<GrandPrix | null> {
+    const now = new Date();
+    const nextGrandPrix = await this.prisma.grandPrix.findFirst({
+      where: {
+        date: {
+          gt: now,
+        },
+      },
+      include: {
+        track: true,
+      },
+      orderBy: {
+        date: 'asc',
+      },
+    });
+
+    return nextGrandPrix;
+  }
 }
