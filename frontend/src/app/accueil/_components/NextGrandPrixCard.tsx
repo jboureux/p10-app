@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { callAPI } from "@/lib/api-client";
+import { GqlError } from "@/types/errors";
 import { NextGrandPrixResponse } from "@/types/grandprix";
 import CountDown from "./CountDown";
 
@@ -20,9 +21,14 @@ export default async function NextGrandPrixCard() {
   }
   `;
 
-  const result: NextGrandPrixResponse = await callAPI<NextGrandPrixResponse>({
-    query,
-  });
+  const result: NextGrandPrixResponse & GqlError =
+    await callAPI<NextGrandPrixResponse>({
+      query,
+    });
+
+  if (result.errors) {
+    return <div>Error: {result.errors[0].message}</div>;
+  }
 
   const nextGrandPrix = result.data.nextGrandPrix;
 
