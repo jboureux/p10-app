@@ -13,19 +13,48 @@ export class ErgastScheduler {
 
   @Cron('0 12 * * 1') // Chaque lundi à 12h UTC
   async handleErgastCron() {
-    console.log('🕛 [Ergast Cron] Lancement de l’import des résultats');
+    console.log("🕛 [Ergast Cron] Lancement de l'import des résultats");
 
     await this.import();
 
-    console.log('✅ [Ergast Cron] Fin de l’import');
+    console.log("✅ [Ergast Cron] Fin de l'import");
+  }
+
+  @Cron('0 6 1 * *') // Le 1er de chaque mois à 6h UTC
+  async handleCurrentSeasonGrandPrixCron() {
+    console.log(
+      "🕘 [Ergast Cron] Lancement de l'import complet de la saison actuelle",
+    );
+
+    await this.importCurrentSeasonData();
+
+    console.log("✅ [Ergast Cron] Fin de l'import complet");
   }
 
   async testManualImport() {
-    console.log('🧪 [Test Manuel] Lancement de l’import Ergast');
+    console.log("🧪 [Test Manuel] Lancement de l'import Ergast");
 
     await this.import();
 
-    console.log('✅ [Test Manuel] Fin de l’import');
+    console.log("✅ [Test Manuel] Fin de l'import");
+  }
+
+  async testManualCurrentSeasonImport() {
+    console.log(
+      "🧪 [Test Manuel] Lancement de l'import complet de la saison actuelle",
+    );
+
+    await this.importCurrentSeasonData();
+
+    console.log("✅ [Test Manuel] Fin de l'import complet");
+  }
+
+  async importCurrentSeasonData() {
+    await this.ergastImporter.importCurrentSeasonData();
+  }
+
+  async importCurrentSeasonGrandPrix() {
+    await this.ergastImporter.importCurrentSeasonGrandPrix();
   }
 
   async import() {
@@ -41,7 +70,7 @@ export class ErgastScheduler {
     if (round) {
       await this.ergastImporter.importRaceResults(season, round);
     } else {
-      console.warn('⚠️ Aucun round trouvé pour la date d’hier');
+      console.warn("⚠️ Aucun round trouvé pour la date d'hier");
     }
   }
 }

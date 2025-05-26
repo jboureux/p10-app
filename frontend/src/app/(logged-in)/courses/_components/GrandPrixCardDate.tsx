@@ -14,7 +14,7 @@ export default function GrandPrixCardDate({ gpDate }: GrandPrixCardDateProps) {
     <div className="text-center mr-4">
       <div className="text-xl font-bold">{formattedDate}</div>
       <div className="text-sm bg-gray-200 text-gray-700 rounded-full px-2 mt-1">
-        {date.toLocaleString("default", { month: "short" })}
+        {date.toLocaleString("fr-FR", { month: "short" })}
       </div>
     </div>
   );

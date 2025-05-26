@@ -1,25 +1,36 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { Field, ObjectType } from '@nestjs/graphql';
 import { GrandPrix } from './grand-prix.entity';
 
 @ObjectType()
 export class Track {
-  @Field(() => String, { description: 'ID get with Api Tracks' })
-  id_api_tracks: string;
-
-  @Field(() => Int, {
-    description: 'Name of the country where race is running',
+  @Field(() => String, {
+    description: 'ID get with Api Tracks',
+    name: 'id_api_track',
   })
-  country_name: string;
+  idApiTrack?: string;
 
-  @Field(() => String, { description: 'Name of the track' })
-  track_name: string;
+  @Field(() => String, {
+    description: 'Name of the country where race is running',
+    name: 'country_name',
+  })
+  countryName?: string;
 
-  @Field(() => String, { description: 'Path of the picture country' })
-  picture_country: Date;
+  @Field(() => String, { description: 'Name of the track', name: 'track_name' })
+  trackName?: string;
 
-  @Field(() => String, { description: 'Circuit picture of the track' })
-  picture_track: string;
+  @Field(() => String, {
+    description: 'Path of the picture country',
+    name: 'picture_country',
+  })
+  pictureCountry?: string;
 
-  @Field(() => [GrandPrix])
-  grand_prix?: [GrandPrix];
+  @Field(() => String, {
+    description: 'Circuit picture of the track',
+    name: 'picture_track',
+    nullable: true,
+  })
+  pictureTrack?: string;
+
+  @Field(() => [GrandPrix], { nullable: true })
+  grandPrix?: [GrandPrix];
 }

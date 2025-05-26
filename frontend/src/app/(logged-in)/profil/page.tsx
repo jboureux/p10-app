@@ -12,7 +12,7 @@ export default async function ProfilePage() {
       firstname
       lastname
       bets_selection_results {
-        pointP10
+        point_p10
         grand_prix {
           date
           season

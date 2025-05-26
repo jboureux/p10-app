@@ -1,12 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { OpenF1SeederCronService } from './openf1/openf1.cron';
+import { ErgastScheduler } from './ergast/ergast.scheduler';
 
 async function bootstrap() {
   const app = await NestFactory.createApplicationContext(AppModule);
-  const cron = app.get(OpenF1SeederCronService);
+  const scheduler = app.get(ErgastScheduler);
 
-  await cron.seedUpcomingGrandPrix();
+  await scheduler.testManualCurrentSeasonImport();
   await app.close();
 }
 

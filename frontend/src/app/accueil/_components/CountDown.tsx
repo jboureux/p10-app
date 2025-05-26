@@ -1,16 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface CountDownProps {
-  date: string;
-  time: string;
+  dateTime: string;
 }
 
-export default function CountDown({ date, time }: CountDownProps) {
+export default function CountDown({ dateTime }: CountDownProps) {
   const [timeLeft, setTimeLeft] = useState("");
 
-  const raceDateTime = new Date(`${date}T${time}`);
+  const raceDateTime = new Date(dateTime);
 
   useEffect(() => {
     const updateCountdown = () => {
@@ -34,7 +33,7 @@ export default function CountDown({ date, time }: CountDownProps) {
     const interval = setInterval(updateCountdown, 200);
 
     return () => clearInterval(interval);
-  }, [date, time]);
+  }, [dateTime]);
 
   return (
     <div className="bg-black text-white py-2 px-3 rounded-xl text-center font-bold mb-4">

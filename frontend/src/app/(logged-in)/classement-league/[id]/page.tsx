@@ -4,8 +4,8 @@ import { callAPI } from "@/lib/api-client";
 import { retrieveToken } from "@/lib/auth-server";
 import { GqlError } from "@/types/errors";
 import { LeagueResponse } from "@/types/leagues";
-import LeagueRankingHeader from "./_components/LeagueRankingHeader";
 import LeagueCode from "./_components/LeagueCode";
+import LeagueRankingHeader from "./_components/LeagueRankingHeader";
 import OtherPlayers from "./_components/OtherPlayers";
 
 interface LeagueRankingPageProps {
@@ -30,7 +30,7 @@ const LeagueRankingPage = async (props: LeagueRankingPageProps) => {
           firstname
           lastname
           bets_selection_results {
-            pointP10
+            point_p10
           }
         }
       }

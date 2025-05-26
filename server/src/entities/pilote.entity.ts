@@ -1,20 +1,20 @@
-import { ObjectType, Field, ID } from '@nestjs/graphql';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { PiloteEcurie } from './pilote-ecurie.entity';
 
 @ObjectType()
 export class Pilote {
-  @Field(() => ID)
-  id_api_pilote: string;
+  @Field(() => ID, { name: 'id_api_pilote' })
+  idApiPilote: string;
 
-  @Field()
+  @Field(() => String, { name: 'name' })
   name: string;
 
-  @Field()
+  @Field(() => String, { name: 'picture' })
   picture: string;
 
-  @Field()
-  name_acronym: string;
+  @Field(() => String, { name: 'name_acronym' })
+  nameAcronym: string;
 
-  @Field(() => [PiloteEcurie])
-  pilote_ecurie?: PiloteEcurie[];
+  @Field(() => [PiloteEcurie], { nullable: true, name: 'pilote_ecurie' })
+  piloteEcurie?: PiloteEcurie[];
 }
