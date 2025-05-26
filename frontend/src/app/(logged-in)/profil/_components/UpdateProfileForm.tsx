@@ -18,7 +18,13 @@ export default function UpdateProfileForm({ user }: { user: User }) {
     setIsLoading(true);
     try {
       // Préparer les données à envoyer
-      const updateData: any = {};
+      const updateData: Partial<{
+        firstname: string;
+        lastname: string;
+        email: string;
+        newPassword: string;
+        currentPassword: string;
+      }> = {};
 
       // Ajouter seulement les champs modifiés
       if (data.firstname && data.firstname !== user.firstname) {

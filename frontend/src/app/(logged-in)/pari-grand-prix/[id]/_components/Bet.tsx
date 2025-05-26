@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { bet } from "../_actions/bet.action";
 import ActionButtons from "./ActionButtons";
@@ -31,6 +32,7 @@ interface BetProps {
 }
 
 const Bet = (props: BetProps) => {
+  const router = useRouter();
   const [selectedEcurie, setSelectedEcurie] = useState<string | null>(null);
   const [selectedP10, setSelectedP10] = useState<string | null>(
     props.currentBet.grand_prix_pilote_p10.id
@@ -39,8 +41,6 @@ const Bet = (props: BetProps) => {
     props.currentBet.grand_prix_pilote_dnf.id
   );
 
-  // TODO: fetch ecuries
-
   const handleBet = async () => {
     if (selectedP10 && selectedDNF) {
       const result = await bet({
@@ -48,6 +48,8 @@ const Bet = (props: BetProps) => {
         piloteDNFId: selectedDNF,
         grandPrixId: props.grandPrixId,
       });
+
+      router.push(`/accueil`);
     }
   };
 
