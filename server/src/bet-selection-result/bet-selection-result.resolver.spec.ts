@@ -30,9 +30,7 @@ describe('BetSelectionResultResolver', () => {
       ],
     }).compile();
 
-    service = module.get<BetSelectionResultService>(
-      BetSelectionResultService,
-    );
+    service = module.get<BetSelectionResultService>(BetSelectionResultService);
     resolver = new TestBetSelectionResultResolver(service);
   });
 

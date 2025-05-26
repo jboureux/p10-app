@@ -23,9 +23,7 @@ describe('BetSelectionResultService', () => {
       ],
     }).compile();
 
-    service = module.get<BetSelectionResultService>(
-      BetSelectionResultService,
-    );
+    service = module.get<BetSelectionResultService>(BetSelectionResultService);
   });
 
   it('should be defined', () => {
