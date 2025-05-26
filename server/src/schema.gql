@@ -83,6 +83,11 @@ type JoinRequest {
   user: User!
 }
 
+type JoinRequestCreatedPayload {
+  leagueId: String!
+  message: String!
+}
+
 enum JoinRequestStatus {
   ACCEPTED
   PENDING
@@ -153,8 +158,7 @@ input RegisterInput {
 }
 
 type Subscription {
-  joinRequestCreated: String!
-  joinRequestResolved: String!
+  joinRequestCreated: JoinRequestCreatedPayload!
 }
 
 type Track {

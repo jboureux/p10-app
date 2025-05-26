@@ -12,6 +12,8 @@ import { LeagueModule } from './league/league.module';
 import { OpenF1Module } from './openf1/openf1.module';
 import { UsersModule } from './users/users.module';
 import { ErgastModule } from './ergast/ergast.module';
+import { PrismaService } from './prisma.service';
+import { PrismaModule } from './prisma.module';
 
 @Module({
   imports: [
@@ -22,6 +24,7 @@ import { ErgastModule } from './ergast/ergast.module';
     BetSelectionResultModule,
     OpenF1Module,
     ErgastModule,
+    PrismaModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET || 'dev-secret',
     }),
@@ -31,9 +34,10 @@ import { ErgastModule } from './ergast/ergast.module';
         JwtModule.register({
           secret: process.env.JWT_SECRET || 'dev-secret',
         }),
+        PrismaModule,
       ],
-      inject: [JwtService],
-      useFactory: (jwtService: JwtService) => {
+      inject: [JwtService, PrismaService],
+      useFactory: (jwtService: JwtService, prismaService: PrismaService) => {
         return {
           playground: false,
           plugins: [ApolloServerPluginLandingPageLocalDefault()],
@@ -56,38 +60,39 @@ import { ErgastModule } from './ergast/ergast.module';
                       role: decoded.role,
                     },
                   },
+                  prisma: prismaService,
                 };
               }
             }
-            return { req };
+            return {
+              req,
+              prisma: prismaService,
+            };
           },
-          // subscriptions: {
-          //   'graphql-ws': {
-          //     onConnect: async (ctx) => {
-          //       const raw =
-          //         ctx.connectionParams?.Authorization ||
-          //         ctx.connectionParams?.authorization;
-          //       const token =
-          //         typeof raw === 'string' ? raw.replace('Bearer ', '') : '';
+          subscriptions: {
+            'graphql-ws': {
+              onConnect: async (ctx) => {
+                const raw =
+                  ctx.connectionParams?.Authorization ||
+                  ctx.connectionParams?.authorization;
+                const token =
+                  typeof raw === 'string' ? raw.replace('Bearer ', '') : '';
 
-          //       console.log('>> WebSocket connected with token:', token);
+                if (!token) return { prisma: prismaService };
 
-          //       if (!token) return {};
+                const decoded = jwtService.verify(token);
 
-          //       const decoded = jwtService.verify(token);
-          //       console.log('>> Decoded user:', decoded);
-
-          //       // ✅ On injecte directement dans le context WebSocket
-          //       return {
-          //         user: {
-          //           userId: decoded.sub,
-          //           email: decoded.email,
-          //           role: decoded.role,
-          //         },
-          //       };
-          //     },
-          //   },
-          // },
+                // On injecte directement dans le context WebSocket
+                return {
+                  user: {
+                    userId: decoded.sub,
+                    email: decoded.email,
+                    role: decoded.role,
+                  },
+                };
+              },
+            },
+          },
           formatError: (error) => {
             const originalError = error.extensions?.originalError as Error;
 
@@ -114,6 +119,6 @@ import { ErgastModule } from './ergast/ergast.module';
       },
     }),
   ],
-  providers: [],
+  providers: [PrismaService],
 })
 export class AppModule {}

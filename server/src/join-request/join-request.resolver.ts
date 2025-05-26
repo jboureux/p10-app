@@ -2,20 +2,19 @@ import { Inject, UseGuards } from '@nestjs/common';
 import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql';
 import { PubSub } from 'graphql-subscriptions';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { CurrentUser } from 'src/common/decorators/current-user.decorator'; // à adapter selon ton auth
-import { UserFromJwt } from 'src/common/types/user-from-jwt.interface'; // idem
-import { PrismaService } from 'src/prisma.service';
+import { CurrentUser } from 'src/common/decorators/current-user.decorator'; 
+import { UserFromJwt } from 'src/common/types/user-from-jwt.interface'; 
 import { JoinRequest } from '../entities/join-request.entity';
 import { CreateJoinRequestInput } from './dto/create-join-request.input';
 import { UpdateJoinRequestStatusInput } from './dto/update-join-request-status.input';
 import { JoinRequestService } from './join-request.service';
+import { JoinRequestCreatedPayload } from 'src/entities/join-request-created.payload';
 
 @Resolver(() => JoinRequest)
 export class JoinRequestResolver {
   constructor(
     private readonly joinRequestService: JoinRequestService,
     @Inject('PUB_SUB') private readonly pubSub: PubSub,
-    private readonly prisma: PrismaService,
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -29,7 +28,8 @@ export class JoinRequestResolver {
     // Émission de l’événement pour l’admin de la ligue
     await this.pubSub.publish('joinRequestCreated', {
       joinRequestCreated: {
-        leagueId: input.leagueId,
+        leagueId: request.leagueId, // ou input.leagueId
+        message: `Nouvelle demande reçue pour la ligue ${request.league.name}`,
       },
     });
 
@@ -47,7 +47,6 @@ export class JoinRequestResolver {
       input,
     );
 
-    // Notifier l’utilisateur concerné
     await this.pubSub.publish('joinRequestResolved', {
       joinRequestResolved: {
         userId: request.userId,
@@ -70,36 +69,29 @@ export class JoinRequestResolver {
     );
   }
 
-  @Subscription(() => String, {
-    filter: async (payload, _: any, context) => {
-      const leagueId = payload.joinRequestCreated.leagueId;
+  @Subscription(() => JoinRequestCreatedPayload, {
+    filter: async (payload, _, context) => {
       const userId = context?.req?.user?.userId;
-      if (!userId) return false;
+      const leagueId = payload.joinRequestCreated.leagueId;
+      const prisma = context?.prisma;
 
-      const admin = await context.injector
-        .get(PrismaService)
-        .userLeague.findFirst({
-          where: { leagueId, userId, isAdmin: true },
+      if (!userId || !prisma) {
+        return false;
+      }
+
+      try {
+        const admin = await prisma.userLeague.findFirst({
+          where: { userId: userId, leagueId: leagueId, isAdmin: true },
         });
 
-      return !!admin;
+        return !!admin;
+      } catch (error) {
+        console.error('❌ Erreur lors de la recherche admin:', error);
+        return false;
+      }
     },
   })
   joinRequestCreated() {
     return this.pubSub.asyncIterableIterator('joinRequestCreated');
-  }
-
-  @Subscription(() => String, {
-    filter: (payload, _, context) => {
-      const userId = context?.req?.user?.userId;
-      if (!userId) return false;
-      console.log('>> payload:', payload.joinRequestResolved);
-      console.log('>> context.userId:', userId);
-
-      return payload.joinRequestResolved.userId === userId;
-    },
-  })
-  joinRequestResolved() {
-    return this.pubSub.asyncIterableIterator('joinRequestResolved');
   }
 }

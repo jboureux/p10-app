@@ -35,7 +35,15 @@ export class LeagueService {
           },
         },
       },
+      include: {
+        userLeague: {
+          include: {
+            user: true, // ← pour `user { id }` dans GraphQL
+          },
+        },
+      },
     });
+    console.log(JSON.stringify(league, null, 2));
 
     return league;
   }
