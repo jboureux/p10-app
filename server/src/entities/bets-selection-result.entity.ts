@@ -4,7 +4,7 @@ import { GrandPrix } from './grand-prix.entity';
 import { User } from './user.entity';
 
 @ObjectType()
-export class BetsSelectionResult {
+export class BetSelectionResult {
   @Field(() => ID)
   id: string;
 

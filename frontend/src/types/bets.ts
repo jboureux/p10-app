@@ -9,7 +9,7 @@ export interface BetSelectionResult {
 
   grand_prix_pilote: string;
 }
-export interface CreateBetsSelectionResults {
+export interface CreateBetSelectionResult {
   userId: string;
 
   grandPrixId: string;

@@ -1,20 +1,20 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { BetsSelectionResultService } from './bet-selection-result.service';
+import { BetSelectionResultService } from './bet-selection-result.service';
 import { PrismaService } from '../prisma.service';
 
 describe('BetSelectionResultService', () => {
-  let service: BetsSelectionResultService;
+  let service: BetSelectionResultService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        BetsSelectionResultService,
+        BetSelectionResultService,
         {
           provide: PrismaService,
           useValue: {
             grandPrix: { findUnique: jest.fn() },
             grandPrixPilote: { findUnique: jest.fn() },
-            betsSelectionResults: {
+            betSelectionResult: {
               create: jest.fn(),
               update: jest.fn(),
             },
@@ -23,9 +23,7 @@ describe('BetSelectionResultService', () => {
       ],
     }).compile();
 
-    service = module.get<BetsSelectionResultService>(
-      BetsSelectionResultService,
-    );
+    service = module.get<BetSelectionResultService>(BetSelectionResultService);
   });
 
   it('should be defined', () => {
