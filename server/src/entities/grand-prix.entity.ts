@@ -1,6 +1,6 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { Track } from './track.entity';
-import { BetsSelectionResult } from './bets-selection-result.entity';
+import { BetSelectionResult } from './bets-selection-result.entity';
 
 @ObjectType()
 export class GrandPrix {
@@ -22,6 +22,6 @@ export class GrandPrix {
   @Field(() => [Track])
   track: [Track];
 
-  @Field(() => BetsSelectionResult)
-  bets_selection_result?: BetsSelectionResult[];
+  @Field(() => BetSelectionResult)
+  bets_selection_result?: BetSelectionResult[];
 }

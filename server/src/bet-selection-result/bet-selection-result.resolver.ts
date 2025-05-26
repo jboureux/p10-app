@@ -5,30 +5,21 @@ import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { UserFromJwt } from 'src/common/types/user-from-jwt.interface';
 import { CreateBetSelectionResultInput } from './dto/create-bet-selection-result';
 import { UpdateBetSelectionResultInput } from './dto/update-bet-selection-result';
-import { BetsSelectionResultService } from './bet-selection-result.service';
-import { BetsSelectionResult } from 'src/entities/bets-selection-result.entity';
+import { BetSelectionResultService } from './bet-selection-result.service';
+import { BetSelectionResult } from 'src/entities/bets-selection-result.entity';
 
 @Resolver()
 export class BetSelectionResultResolver {
   constructor(
-    private readonly betSelectionResultService: BetsSelectionResultService,
+    private readonly betSelectionResultService: BetSelectionResultService,
   ) {}
 
   @UseGuards(JwtAuthGuard)
-  @Mutation(() => BetsSelectionResult)
+  @Mutation(() => BetSelectionResult)
   create(
     @CurrentUser() user: UserFromJwt,
     @Args('input') input: CreateBetSelectionResultInput,
   ) {
     return this.betSelectionResultService.create(user.userId, input);
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Mutation(() => BetsSelectionResult)
-  update(
-    @CurrentUser() user: UserFromJwt,
-    @Args('input') input: UpdateBetSelectionResultInput,
-  ) {
-    return this.betSelectionResultService.update(user.userId, input);
   }
 }

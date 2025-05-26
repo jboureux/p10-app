@@ -18,7 +18,7 @@ model User {
   apiAvatarId String  @map("api_avatar_id")
 
   userLeague           UserLeague[]
-  BetsSelectionResults BetsSelectionResults[]
+  BetSelectionResult BetSelectionResult[]
   joinRequests         JoinRequest[]
 }
 
@@ -82,7 +82,7 @@ model GrandPrix {
 
   track Track @relation(fields: [idApiTrack], references: [idApiTrack])
 
-  betsSelectionResults BetsSelectionResults[]
+  betSelectionResult BetSelectionResult[]
   grandPrixClassement  GrandPrixClassement[]
 }
 
@@ -103,10 +103,10 @@ model GrandPrixPilote {
   idEcurie    String @map("id_ecurie")
 
   GrandPrixClassement  GrandPrixClassement[]
-  BetsSelectionResults BetsSelectionResults[]
+  BetSelectionResult BetSelectionResult[]
 }
 
-model BetsSelectionResults {
+model BetSelectionResult {
   id          String @id @unique @default(uuid())
   userId      String @map("user_id")
   idGrandPrix String @map("id_grand_prix")

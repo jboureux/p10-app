@@ -1,11 +1,11 @@
-import { BetsSelectionResults } from "./bets";
+import { BetSelectionResult } from "./bets";
 
 export interface User {
   id: string;
   firstname: string;
   lastname: string;
+  bets_selection_results: Partial<BetSelectionResult>[];
   email: string;
-  bets_selection_results: Partial<BetsSelectionResults>[];
 }
 
 export interface UserResponse {

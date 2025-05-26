@@ -7,7 +7,7 @@ type AuthResponse {
   user: User!
 }
 
-type BetsSelectionResult {
+type BetSelectionResult {
   grand_prix: GrandPrix!
   grand_prix_pilote: GrandPrixPilote!
   id: ID!
@@ -44,7 +44,7 @@ type Ecurie {
 }
 
 type GrandPrix {
-  bets_selection_result: BetsSelectionResult
+  bets_selection_result: BetSelectionResult
 
   """Grand Prix date"""
   date: String!
@@ -105,7 +105,7 @@ input LoginInput {
 }
 
 type Mutation {
-  create(input: CreateBetSelectionResultInput!): BetsSelectionResult!
+  create(input: CreateBetSelectionResultInput!): BetSelectionResult!
   createJoinRequest(input: CreateJoinRequestInput!): JoinRequest!
   createLeague(input: CreateLeagueInput!): League!
   deleteLeague(leagueId: String!): Boolean!
@@ -115,7 +115,6 @@ type Mutation {
   logout: Boolean!
   register(input: RegisterInput!): AuthResponse!
   removeUser(id: String!): User!
-  update(input: UpdateBetSelectionResultInput!): BetsSelectionResult!
   updateJoinRequestStatus(input: UpdateJoinRequestStatusInput!): JoinRequest!
   updateProfile(updateProfileInput: UpdateProfileInput!): User!
   updateUser(updateUserInput: UpdateUserInput!): User!
@@ -176,11 +175,6 @@ type Track {
   track_name: String!
 }
 
-input UpdateBetSelectionResultInput {
-  pointP10: Float!
-  userId: ID!
-}
-
 input UpdateJoinRequestStatusInput {
   requestId: ID!
   status: JoinRequestStatus!
@@ -206,7 +200,7 @@ input UpdateUserInput {
 
 type User {
   api_avatar_id: String
-  bets_selection_results: [BetsSelectionResult!]
+  bets_selection_results: [BetSelectionResult!]
   email: String!
   firstname: String
   id: ID!
