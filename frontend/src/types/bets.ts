@@ -1,13 +1,18 @@
+import { GrandPrix, GrandPrixPilote } from "./grandprix";
+import { User } from "./users";
+
 export interface BetSelectionResult {
   id: string;
 
   pointP10: number;
 
-  user: string;
+  user: Partial<User>;
 
-  grand_prix: string;
+  grand_prix: Partial<GrandPrix>;
 
-  grand_prix_pilote: string;
+  grand_prix_pilote_p10: Partial<GrandPrixPilote>;
+
+  grand_prix_pilote_dnf: Partial<GrandPrixPilote>;
 }
 export interface CreateBetSelectionResult {
   userId: string;
