@@ -5,7 +5,9 @@ import { GqlError } from "@/types/errors";
 import { GrandPrixPilotesResponse } from "@/types/grandprix";
 import Bet from "./_components/Bet";
 
-export default async function ParierPage(props: { params: { id: string } }) {
+export default async function ParierPage(props: {
+  params: Promise<{ id: string }>;
+}) {
   const query = `
   query grandPrixPilotes($grandPrixId: String!) {
     grandPrixPilotes(grandPrixId: $grandPrixId) {
