@@ -16,5 +16,5 @@ export class Pilote {
   nameAcronym: string;
 
   @Field(() => [PiloteEcurie], { nullable: true, name: 'pilote_ecurie' })
-  piloteEcurie?: PiloteEcurie[];
+  pilotesEcurie?: PiloteEcurie[];
 }

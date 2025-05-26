@@ -1,10 +1,13 @@
-import { InputType, Field, ID } from '@nestjs/graphql';
+import { Field, ID, InputType } from '@nestjs/graphql';
 
 @InputType()
 export class UpdateBetSelectionResultInput {
   @Field(() => ID)
-  userId: string;
+  id: string;
 
-  @Field()
-  pointP10: number;
+  @Field(() => ID)
+  grandPrixPiloteIdP10: string;
+
+  @Field(() => ID)
+  grandPrixPiloteIdDNF: string;
 }

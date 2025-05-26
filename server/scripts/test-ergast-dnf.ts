@@ -10,13 +10,13 @@ async function testErgastDnfImport() {
 
   try {
     // Tester avec le GP de Monaco 2025 (round 8) qui a des pilotes retirés
-    // await ergastImporter.importRaceResults('2025', '1');
-    // await ergastImporter.importRaceResults('2025', '2');
-    // await ergastImporter.importRaceResults('2025', '3');
-    // await ergastImporter.importRaceResults('2025', '4');
-    // await ergastImporter.importRaceResults('2025', '5');
-    // await ergastImporter.importRaceResults('2025', '6');
-    // await ergastImporter.importRaceResults('2025', '7');
+    await ergastImporter.importRaceResults('2025', '1');
+    await ergastImporter.importRaceResults('2025', '2');
+    await ergastImporter.importRaceResults('2025', '3');
+    await ergastImporter.importRaceResults('2025', '4');
+    await ergastImporter.importRaceResults('2025', '5');
+    await ergastImporter.importRaceResults('2025', '6');
+    await ergastImporter.importRaceResults('2025', '7');
     await ergastImporter.importRaceResults('2025', '8');
 
     console.log("✅ Test d'importation DNF terminé");

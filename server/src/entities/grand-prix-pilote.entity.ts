@@ -6,8 +6,8 @@ import { Pilote } from './pilote.entity';
 
 @ObjectType()
 export class GrandPrixPilote {
-  @Field(() => ID, { name: 'id_api_grand_prix_pilote' })
-  idApiGrandPrixPilote: string;
+  @Field(() => ID, { name: 'id' })
+  id: string;
 
   @Field(() => GrandPrix, { nullable: true, name: 'grand_prix' })
   grandPrix: GrandPrix;

@@ -22,3 +22,41 @@ export interface UpdateBetSelectionResult {
 
   pointP10: number;
 }
+
+export interface HasUserBetOnGrandPrixResponse {
+  data: {
+    hasUserBetOnGrandPrix: {
+      has_bet: boolean;
+      bet_id?: string;
+    };
+  };
+}
+
+export interface CreateBetSelectionResultResponse {
+  data: {
+    createBet: {
+      id: string;
+    };
+  };
+}
+
+export interface UpdateBetSelectionResultResponse {
+  data: {
+    updateBet: {
+      id: string;
+    };
+  };
+}
+
+export interface GetUserBetForGrandPrixResponse {
+  data: {
+    getUserBetForGrandPrix: {
+      grand_prix_pilote_dnf: {
+        id: string;
+      };
+      grand_prix_pilote_p10: {
+        id: string;
+      };
+    };
+  };
+}

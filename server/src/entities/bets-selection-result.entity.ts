@@ -17,6 +17,15 @@ export class BetSelectionResult {
   @Field(() => GrandPrix, { name: 'grand_prix', nullable: true })
   grandPrix: GrandPrix;
 
-  @Field(() => GrandPrixPilote, { name: 'grand_prix_pilote', nullable: true })
-  grandPrixPilote: GrandPrixPilote;
+  @Field(() => GrandPrixPilote, {
+    name: 'grand_prix_pilote_p10',
+    nullable: true,
+  })
+  grandPrixPiloteP10: GrandPrixPilote;
+
+  @Field(() => GrandPrixPilote, {
+    name: 'grand_prix_pilote_dnf',
+    nullable: true,
+  })
+  grandPrixPiloteDnf: GrandPrixPilote;
 }

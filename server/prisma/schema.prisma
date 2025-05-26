@@ -17,9 +17,9 @@ model User {
   role        String
   apiAvatarId String  @map("api_avatar_id")
 
-  userLeague           UserLeague[]
+  userLeague         UserLeague[]
   BetSelectionResult BetSelectionResult[]
-  joinRequests         JoinRequest[]
+  joinRequests       JoinRequest[]
 }
 
 model League {
@@ -84,9 +84,9 @@ model GrandPrix {
 
   track Track @relation(fields: [idApiTrack], references: [idApiTrack])
 
-  betSelectionResult BetSelectionResult[]
-  grandPrixClassement  GrandPrixClassement[]
-  GrandPrixPilote      GrandPrixPilote[]
+  betSelectionResult  BetSelectionResult[]
+  grandPrixClassement GrandPrixClassement[]
+  GrandPrixPilote     GrandPrixPilote[]
 }
 
 model GrandPrixClassement {
@@ -107,11 +107,12 @@ model GrandPrixPilote {
   idPilote    String @map("id_pilote")
   idEcurie    String @map("id_ecurie")
 
-  grandPrix            GrandPrix              @relation(fields: [idGrandPrix], references: [idApiRaces])
-  pilote               Pilote                 @relation(fields: [idPilote], references: [idApiPilote])
-  ecurie               Ecurie                 @relation(fields: [idEcurie], references: [idApiEcurie])
-  GrandPrixClassement  GrandPrixClassement[]
-  BetSelectionResult BetSelectionResult[]
+  grandPrix             GrandPrix             @relation(fields: [idGrandPrix], references: [idApiRaces])
+  pilote                Pilote                @relation(fields: [idPilote], references: [idApiPilote])
+  ecurie                Ecurie                @relation(fields: [idEcurie], references: [idApiEcurie])
+  GrandPrixClassement   GrandPrixClassement[]
+  BetSelectionResultP10 BetSelectionResult[]  @relation("P10Bet")
+  BetSelectionResultDnf BetSelectionResult[]  @relation("DnfBet")
 }
 
 model BetSelectionResult {
@@ -120,10 +121,12 @@ model BetSelectionResult {
   idGrandPrix String @map("id_grand_prix")
   pointP10    Int    @map("point_p10")
   idPiloteP10 String @map("id_pilote_p10")
+  idPiloteDnf String @map("id_pilote_dnf")
 
-  user            User            @relation(fields: [userId], references: [id])
-  grandPrix       GrandPrix       @relation(fields: [idGrandPrix], references: [idApiRaces])
-  grandPrixPilote GrandPrixPilote @relation(fields: [idPiloteP10], references: [id])
+  user               User            @relation(fields: [userId], references: [id])
+  grandPrix          GrandPrix       @relation(fields: [idGrandPrix], references: [idApiRaces])
+  grandPrixPiloteP10 GrandPrixPilote @relation("P10Bet", fields: [idPiloteP10], references: [id])
+  grandPrixPiloteDnf GrandPrixPilote @relation("DnfBet", fields: [idPiloteDnf], references: [id])
 }
 
 model Track {

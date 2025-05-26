@@ -1,7 +1,16 @@
-import { Ecurie } from "../page";
-
 interface PilotesProps {
-  ecuries: Ecurie[];
+  ecuries: {
+    idApiEcurie: string;
+    name: string;
+    logo: string;
+    color: string;
+    pilotes: {
+      idApiPilote: string;
+      name: string;
+      picture: string;
+      nameAcronym: string;
+    }[];
+  }[];
   selectedEcurie: string | null;
   selectedP10: string | null;
   selectedDNF: string | null;
@@ -34,11 +43,13 @@ export default function Pilotes({
                 key={pilote.idApiPilote}
                 className="bg-white rounded-xl p-3 shadow-sm"
               >
-                <img
-                  src={pilote.picture}
-                  alt={pilote.name}
-                  className="w-full h-24 object-contain mb-2"
-                />
+                {pilote.picture && (
+                  <img
+                    src={pilote.picture}
+                    alt={pilote.name}
+                    className="w-full h-24 object-contain mb-2"
+                  />
+                )}
                 <p className="text-center font-semibold text-sm">
                   {pilote.name}
                 </p>

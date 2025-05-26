@@ -1,4 +1,5 @@
-import { Query, Resolver } from '@nestjs/graphql';
+import { Args, Query, Resolver } from '@nestjs/graphql';
+import { GrandPrixPilote } from '../entities/grand-prix-pilote.entity';
 import { GrandPrix } from '../entities/grand-prix.entity';
 import { GrandPrixService } from './grand-prix.service';
 
@@ -24,5 +25,10 @@ export class GrandPrixResolver {
   @Query(() => GrandPrix, { name: 'nextGrandPrix', nullable: true })
   async findNext() {
     return this.grandPrixService.findNext();
+  }
+
+  @Query(() => [GrandPrixPilote], { name: 'grandPrixPilotes' })
+  async findPilotesByGrandPrix(@Args('grandPrixId') grandPrixId: string) {
+    return this.grandPrixService.findPilotesByGrandPrix(grandPrixId);
   }
 }

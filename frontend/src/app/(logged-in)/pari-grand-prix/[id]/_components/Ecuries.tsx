@@ -1,7 +1,16 @@
-import { Ecurie } from "../page";
-
 interface EcuriesProps {
-  ecuries: Ecurie[];
+  ecuries: {
+    idApiEcurie: string;
+    name: string;
+    logo: string;
+    color: string;
+    pilotes: {
+      idApiPilote: string;
+      name: string;
+      picture: string;
+      nameAcronym: string;
+    }[];
+  }[];
   selectedEcurie: string | null;
   setSelectedEcurie: (ecurie: string | null) => void;
 }
@@ -33,7 +42,9 @@ export default function Ecuries({
                 : "border-transparent"
             }`}
           >
-            <img src={ecurie.logo} alt={ecurie.name} className="h-10 mb-2" />
+            {ecurie.logo && (
+              <img src={ecurie.logo} alt={ecurie.name} className="h-10 mb-2" />
+            )}
             <p className="text-sm font-semibold">{ecurie.name}</p>
           </div>
         ))}

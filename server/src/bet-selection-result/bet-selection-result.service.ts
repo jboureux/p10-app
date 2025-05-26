@@ -7,7 +7,6 @@ import {
 import { PrismaService } from '../prisma.service';
 import { CreateBetSelectionResultInput } from './dto/create-bet-selection-result';
 import { UpdateBetSelectionResultInput } from './dto/update-bet-selection-result';
-import { BetSelectionResult } from '@prisma/client';
 
 @Injectable()
 export class BetSelectionResultService {
@@ -33,11 +32,18 @@ export class BetSelectionResultService {
         throw new NotFoundException('Grand Prix introuvable.');
       }
 
-      const grandPrixPilote = await this.prisma.grandPrixPilote.findUnique({
-        where: { id: input.grandPrixPiloteId },
+      const grandPrixPiloteP10 = await this.prisma.grandPrixPilote.findUnique({
+        where: { id: input.grandPrixPiloteIdP10 },
       });
-      if (!grandPrixPilote) {
-        throw new NotFoundException('Grand Prix Pilote introuvable.');
+      if (!grandPrixPiloteP10) {
+        throw new NotFoundException('Grand Prix Pilote p10 introuvable.');
+      }
+
+      const grandPrixPiloteDNF = await this.prisma.grandPrixPilote.findUnique({
+        where: { id: input.grandPrixPiloteIdDNF },
+      });
+      if (!grandPrixPiloteDNF) {
+        throw new NotFoundException('Grand Prix Pilote DNF introuvable.');
       }
 
       return await this.prisma.betSelectionResult.create({
@@ -45,12 +51,14 @@ export class BetSelectionResultService {
           pointP10: 0,
           user: { connect: { id: userId } },
           grandPrix: { connect: { idApiRaces: input.grandPrixId } },
-          grandPrixPilote: { connect: { id: input.grandPrixPiloteId } },
+          grandPrixPiloteP10: { connect: { id: input.grandPrixPiloteIdP10 } },
+          grandPrixPiloteDnf: { connect: { id: input.grandPrixPiloteIdDNF } },
         },
         include: {
           user: true,
           grandPrix: true,
-          grandPrixPilote: true,
+          grandPrixPiloteP10: true,
+          grandPrixPiloteDnf: true,
         },
       });
     } catch (error) {
@@ -67,5 +75,95 @@ export class BetSelectionResultService {
         'Erreur inattendue lors de la création du pari.',
       );
     }
+  }
+
+  async update(userId: string, input: UpdateBetSelectionResultInput) {
+    const existingBet = await this.prisma.betSelectionResult.findFirst({
+      where: {
+        userId: userId,
+      },
+    });
+
+    if (!existingBet) {
+      throw new NotFoundException('Pari introuvable.');
+    }
+
+    const grandPrixPiloteP10 = await this.prisma.grandPrixPilote.findUnique({
+      where: { id: input.grandPrixPiloteIdP10 },
+    });
+    if (!grandPrixPiloteP10) {
+      throw new NotFoundException('Grand Prix Pilote p10 introuvable.');
+    }
+
+    const grandPrixPiloteDNF = await this.prisma.grandPrixPilote.findUnique({
+      where: { id: input.grandPrixPiloteIdDNF },
+    });
+    if (!grandPrixPiloteDNF) {
+      throw new NotFoundException('Grand Prix Pilote DNF introuvable.');
+    }
+
+    const updatedBet = await this.prisma.betSelectionResult.update({
+      where: { id: existingBet.id },
+      data: {
+        grandPrixPiloteP10: { connect: { id: input.grandPrixPiloteIdP10 } },
+        grandPrixPiloteDnf: { connect: { id: input.grandPrixPiloteIdDNF } },
+      },
+      include: {
+        grandPrixPiloteP10: true,
+        grandPrixPiloteDnf: true,
+      },
+    });
+    return updatedBet;
+  }
+
+  async hasUserBetOnGrandPrix(
+    userId: string,
+    grandPrixId: string,
+  ): Promise<{ hasBet: boolean; betId?: string }> {
+    const existingBet = await this.prisma.betSelectionResult.findFirst({
+      where: {
+        userId: userId,
+        grandPrix: { idApiRaces: grandPrixId },
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    return {
+      hasBet: !!existingBet,
+      betId: existingBet?.id,
+    };
+  }
+
+  async getUserBetForGrandPrix(userId: string, grandPrixId: string) {
+    const bet = await this.prisma.betSelectionResult.findFirst({
+      where: {
+        userId: userId,
+        grandPrix: { idApiRaces: grandPrixId },
+      },
+      include: {
+        user: true,
+        grandPrix: {
+          include: {
+            track: true,
+          },
+        },
+        grandPrixPiloteP10: {
+          include: {
+            pilote: true,
+            ecurie: true,
+          },
+        },
+        grandPrixPiloteDnf: {
+          include: {
+            pilote: true,
+            ecurie: true,
+          },
+        },
+      },
+    });
+
+    return bet;
   }
 }

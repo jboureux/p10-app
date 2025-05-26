@@ -8,8 +8,9 @@ type AuthResponse {
 }
 
 type BetSelectionResult {
-  grand_prix: GrandPrix!
-  grand_prix_pilote: GrandPrixPilote!
+  grand_prix: GrandPrix
+  grand_prix_pilote_dnf: GrandPrixPilote
+  grand_prix_pilote_p10: GrandPrixPilote
   id: ID!
   point_p10: Int!
   user: User!
@@ -17,7 +18,8 @@ type BetSelectionResult {
 
 input CreateBetSelectionResultInput {
   grandPrixId: ID!
-  grandPrixPiloteId: ID!
+  grandPrixPiloteIdDNF: ID!
+  grandPrixPiloteIdP10: ID!
 }
 
 input CreateJoinRequestInput {
@@ -74,7 +76,7 @@ type GrandPrixPilote {
   ecurie: Ecurie
   grand_prix: GrandPrix
   grand_prix_classement: [GrandPrixClassement!]
-  id_api_grand_prix_pilote: ID!
+  id: ID!
   pilote: Pilote
 }
 
@@ -108,7 +110,7 @@ input LoginInput {
 }
 
 type Mutation {
-  create(input: CreateBetSelectionResultInput!): BetSelectionResult!
+  createBet(input: CreateBetSelectionResultInput!): BetSelectionResult!
   createJoinRequest(input: CreateJoinRequestInput!): JoinRequest!
   createLeague(input: CreateLeagueInput!): League!
   deleteLeague(leagueId: String!): Boolean!
@@ -118,6 +120,7 @@ type Mutation {
   logout: Boolean!
   register(input: RegisterInput!): AuthResponse!
   removeUser(id: String!): User!
+  updateBet(input: UpdateBetSelectionResultInput!): BetSelectionResult!
   updateJoinRequestStatus(input: UpdateJoinRequestStatusInput!): JoinRequest!
   updateProfile(updateProfileInput: UpdateProfileInput!): User!
   updateUser(updateUserInput: UpdateUserInput!): User!
@@ -141,6 +144,9 @@ type PiloteEcurie {
 type Query {
   allGrandPrix: [GrandPrix!]!
   getAllLeagues: [League!]!
+  getUserBetForGrandPrix(grandPrixId: String!): BetSelectionResult
+  grandPrixPilotes(grandPrixId: String!): [GrandPrixPilote!]!
+  hasUserBetOnGrandPrix(grandPrixId: String!): UserBetStatus!
   isLogged: Boolean!
   league(id: String!): League!
   myLeagues: [League!]!
@@ -182,6 +188,12 @@ type Track {
   track_name: String
 }
 
+input UpdateBetSelectionResultInput {
+  grandPrixPiloteIdDNF: ID!
+  grandPrixPiloteIdP10: ID!
+  id: ID!
+}
+
 input UpdateJoinRequestStatusInput {
   requestId: ID!
   status: JoinRequestStatus!
@@ -214,6 +226,14 @@ type User {
   lastname: String
   role: String!
   user_league: [UserLeague!]
+}
+
+type UserBetStatus {
+  """ID du pari si l'utilisateur a déjà parié"""
+  bet_id: ID
+
+  """Indique si l'utilisateur a déjà parié sur ce Grand Prix"""
+  has_bet: Boolean!
 }
 
 type UserLeague {

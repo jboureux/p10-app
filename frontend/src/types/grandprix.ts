@@ -19,6 +19,7 @@ export interface GrandPrixClassement {
 }
 
 export interface GrandPrixPilote {
+  id: string;
   ecurie: Partial<Ecurie>;
   pilote: Partial<Pilote>;
 }
@@ -32,5 +33,11 @@ export interface AllGrandPrixResponse {
 export interface NextGrandPrixResponse {
   data: {
     nextGrandPrix: Partial<GrandPrix>;
+  };
+}
+
+export interface GrandPrixPilotesResponse {
+  data: {
+    grandPrixPilotes: Partial<GrandPrixPilote>[];
   };
 }

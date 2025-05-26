@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { GrandPrix } from '@prisma/client';
+import { GrandPrix, GrandPrixPilote } from '@prisma/client';
 import { PrismaService } from '../prisma.service';
 
 @Injectable()
@@ -94,5 +94,68 @@ export class GrandPrixService {
     });
 
     return nextGrandPrix;
+  }
+
+  async findPilotesByGrandPrix(
+    grandPrixId: string,
+  ): Promise<GrandPrixPilote[]> {
+    const grandPrix = await this.prisma.grandPrix.findUnique({
+      where: {
+        idApiRaces: grandPrixId,
+      },
+      include: {
+        track: true,
+      },
+    });
+
+    if (!grandPrix) {
+      throw new Error(`Grand Prix avec l'ID ${grandPrixId} non trouvé`);
+    }
+
+    const seasonYear = parseInt(grandPrix.season);
+
+    const grandPrixPilotes = await this.prisma.grandPrixPilote.findMany({
+      where: {
+        idGrandPrix: grandPrixId,
+      },
+      include: {
+        pilote: {
+          include: {
+            pilotesEcurie: {
+              where: {
+                AND: [
+                  {
+                    year: {
+                      gte: new Date(`${seasonYear}-01-01`),
+                    },
+                  },
+                  {
+                    year: {
+                      lt: new Date(`${seasonYear + 1}-01-01`),
+                    },
+                  },
+                ],
+              },
+              include: {
+                ecurie: true,
+              },
+            },
+          },
+        },
+        ecurie: true,
+        grandPrix: {
+          include: {
+            track: true,
+          },
+        },
+      },
+      orderBy: {
+        ecurie: {
+          name: 'asc',
+        },
+      },
+    });
+
+    return grandPrixPilotes;
   }
 }
