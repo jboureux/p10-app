@@ -3,7 +3,6 @@ import { GrandPrixClassement } from './grand-prix-classement.entity';
 import { Track } from './track.entity';
 import { BetSelectionResult } from './bets-selection-result.entity';
 
-
 @ObjectType()
 export class GrandPrix {
   @Field(() => String, {
