@@ -43,7 +43,7 @@ const Bet = (props: BetProps) => {
 
   const handleBet = async () => {
     if (selectedP10 && selectedDNF) {
-      const result = await bet({
+      await bet({
         piloteP10Id: selectedP10,
         piloteDNFId: selectedDNF,
         grandPrixId: props.grandPrixId,
