@@ -3,18 +3,18 @@ import { PiloteEcurie } from './pilote-ecurie.entity';
 
 @ObjectType()
 export class Ecurie {
-  @Field(() => ID)
+  @Field(() => ID, { name: 'id_api_ecurie' })
   idApiEcurie: string;
 
-  @Field()
+  @Field(() => String, { name: 'name' })
   name: string;
 
-  @Field()
+  @Field(() => String, { name: 'logo' })
   logo: string;
 
-  @Field()
+  @Field(() => String, { name: 'color' })
   color: string;
 
-  @Field(() => [PiloteEcurie])
-  pilote_ecurie?: PiloteEcurie[];
+  @Field(() => [PiloteEcurie], { nullable: true, name: 'pilote_ecurie' })
+  piloteEcurie?: PiloteEcurie[];
 }

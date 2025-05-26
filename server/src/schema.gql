@@ -8,10 +8,10 @@ type AuthResponse {
 }
 
 type BetsSelectionResult {
-  grand_prix: GrandPrix!
-  grand_prix_pilote: GrandPrixPilote!
+  grand_prix: GrandPrix
+  grand_prix_pilote: GrandPrixPilote
   id: ID!
-  pointP10: Int!
+  point_p10: Int!
   user: User!
 }
 
@@ -37,17 +37,16 @@ scalar DateTime
 
 type Ecurie {
   color: String!
-  idApiEcurie: ID!
+  id_api_ecurie: ID!
   logo: String!
   name: String!
-  pilote_ecurie: [PiloteEcurie!]!
+  pilote_ecurie: [PiloteEcurie!]
 }
 
 type GrandPrix {
-  bets_selection_result: BetsSelectionResult!
-
   """Grand Prix date"""
-  date: String!
+  date: DateTime!
+  grand_prix_classement: [GrandPrixClassement!]
 
   """ID get with API Races"""
   id_api_races: String!
@@ -55,24 +54,26 @@ type GrandPrix {
   """Grand Prix Season"""
   season: String!
 
-  """Grand Prix Date"""
-  time: String!
-  track: [Track!]!
+  """Grand Prix time"""
+  time: DateTime!
+  track: Track
 }
 
 type GrandPrixClassement {
-  grand_prix: GrandPrix!
-  grand_prix_pilote: GrandPrixPilote!
+  grand_prix: GrandPrix
+  grand_prix_pilote: GrandPrixPilote
   id: ID!
-  position: Int!
+  is_dnf: Boolean
+  is_first_dnf: Boolean
+  position: Int
 }
 
 type GrandPrixPilote {
-  ecurie: Ecurie!
-  grand_prix: GrandPrix!
-  grand_prix_classement: [GrandPrixClassement!]!
-  id: ID!
-  pilote: Pilote!
+  ecurie: Ecurie
+  grand_prix: GrandPrix
+  grand_prix_classement: [GrandPrixClassement!]
+  id_api_grand_prix_pilote: ID!
+  pilote: Pilote
 }
 
 type JoinRequest {
@@ -96,7 +97,7 @@ type League {
   isPrivate: Boolean!
   name: String!
   sharedLink: String!
-  user_league: [UserLeague!]!
+  user_league: [UserLeague!]
 }
 
 input LoginInput {
@@ -126,7 +127,7 @@ type Pilote {
   name: String!
   name_acronym: String!
   picture: String!
-  pilote_ecurie: [PiloteEcurie!]!
+  pilote_ecurie: [PiloteEcurie!]
 }
 
 type PiloteEcurie {
@@ -137,11 +138,14 @@ type PiloteEcurie {
 }
 
 type Query {
+  allGrandPrix: [GrandPrix!]!
   getAllLeagues: [League!]!
   isLogged: Boolean!
   league(id: String!): League!
   myLeagues: [League!]!
+  pastGrandPrix: [GrandPrix!]!
   pendingRequestsByLeague(leagueId: String!): [JoinRequest!]!
+  upcomingGrandPrix: [GrandPrix!]!
   user(id: String!): User!
   users: [User!]!
 }
@@ -160,20 +164,20 @@ type Subscription {
 
 type Track {
   """Name of the country where race is running"""
-  country_name: Int!
-  grand_prix: [GrandPrix!]!
+  country_name: String
+  grandPrix: [GrandPrix!]
 
   """ID get with Api Tracks"""
-  id_api_tracks: String!
+  id_api_track: String
 
   """Path of the picture country"""
-  picture_country: String!
+  picture_country: String
 
   """Circuit picture of the track"""
-  picture_track: String!
+  picture_track: String
 
   """Name of the track"""
-  track_name: String!
+  track_name: String
 }
 
 input UpdateBetSelectionResultInput {
@@ -205,14 +209,14 @@ input UpdateUserInput {
 }
 
 type User {
-  api_avatar_id: String!
-  bets_selection_results: [BetsSelectionResult!]!
+  api_avatar_id: String
+  bets_selection_results: [BetsSelectionResult!]
   email: String!
-  firstname: String!
+  firstname: String
   id: ID!
-  lastname: String!
+  lastname: String
   role: String!
-  user_league: [UserLeague!]!
+  user_league: [UserLeague!]
 }
 
 type UserLeague {

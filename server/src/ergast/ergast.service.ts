@@ -83,13 +83,25 @@ export class ErgastService {
   async getRaceResults(
     season: string,
     round: string,
-  ): Promise<{ results: any[]; date: string }> {
+  ): Promise<{ results: any[]; date: string; retiredDrivers: any[] }> {
     const url = `https://api.jolpi.ca/ergast/f1/${season}/${round}/results.json`;
     const response = await firstValueFrom(this.http.get(url));
     const race = response.data?.MRData?.RaceTable?.Races?.[0];
+
+    const allResults = race?.Results || [];
+
+    // Séparer les pilotes classés et retirés
+    const finishedResults = allResults.filter(
+      (result: any) => result.positionText !== 'R',
+    );
+    const retiredResults = allResults.filter(
+      (result: any) => result.positionText === 'R',
+    );
+
     return {
-      results: race?.Results || [],
+      results: finishedResults,
       date: race?.date,
+      retiredDrivers: retiredResults,
     };
   }
 

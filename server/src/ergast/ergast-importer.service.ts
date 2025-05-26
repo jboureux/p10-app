@@ -282,17 +282,11 @@ export class ErgastImporterService {
     );
   }
 
-  /**
-   * @deprecated Utilisez F1ApiImporterService à la place
-   * Cette méthode est conservée pour compatibilité mais ne devrait plus être utilisée
-   */
   async importRaceResults(season: string, round: string) {
-    const { results, date } = await this.ergastService.getRaceResults(
-      season,
-      round,
-    );
+    const { results, date, retiredDrivers } =
+      await this.ergastService.getRaceResults(season, round);
 
-    if (!results.length || !date) {
+    if ((!results.length && !retiredDrivers.length) || !date) {
       console.warn('❌ Aucun résultat ou date invalide');
       return;
     }
@@ -321,6 +315,21 @@ export class ErgastImporterService {
       return;
     }
 
+    // Identifier le premier DNF (pilote retiré avec le moins de tours)
+    let firstDnfDriverCode = null;
+    if (retiredDrivers.length > 0) {
+      const sortedRetired = retiredDrivers.sort((a: any, b: any) => {
+        const lapsA = parseInt(a.laps || '0', 10);
+        const lapsB = parseInt(b.laps || '0', 10);
+        return lapsA - lapsB; // Tri croissant par nombre de tours
+      });
+      firstDnfDriverCode = sortedRetired[0]?.Driver?.code;
+      console.log(
+        `🏁 Premier DNF identifié: ${firstDnfDriverCode} (${sortedRetired[0]?.laps} tours)`,
+      );
+    }
+
+    // Traiter les pilotes classés
     for (const result of results) {
       const acronym = result.Driver.code; // Exemple : "VER"
       console.log(`⏳ Traitement de ${acronym} (position: ${result.position})`);
@@ -358,7 +367,11 @@ export class ErgastImporterService {
       if (classement) {
         await this.prisma.grandPrixClassement.update({
           where: { id: classement.id },
-          data: { position },
+          data: {
+            position,
+            isDnf: false,
+            isFirstDnf: false,
+          },
         });
         console.log(
           `✅ Mis à jour de la position pour ${acronym}: ${position}`,
@@ -369,9 +382,76 @@ export class ErgastImporterService {
             idGrandPrix: grandPrix.idApiRaces,
             idGrandPrixPilote: gpPilote.id,
             position,
+            isDnf: false,
+            isFirstDnf: false,
           },
         });
         console.log(`✅ Création de classement pour ${acronym}: ${position}`);
+      }
+    }
+
+    // Traiter les pilotes retirés (DNF)
+    for (const retiredResult of retiredDrivers) {
+      const acronym = retiredResult.Driver.code;
+      const isFirstDnf = acronym === firstDnfDriverCode;
+
+      console.log(
+        `⚠️ Traitement DNF de ${acronym} (${retiredResult.laps} tours)${isFirstDnf ? ' - PREMIER DNF' : ''}`,
+      );
+
+      const pilote = await this.prisma.pilote.findFirst({
+        where: { nameAcronym: acronym },
+      });
+
+      if (!pilote) {
+        console.warn(`❌ Pilote DNF non trouvé: ${acronym}`);
+        continue;
+      }
+
+      const gpPilote = await this.prisma.grandPrixPilote.findFirst({
+        where: {
+          idGrandPrix: grandPrix.idApiRaces,
+          idPilote: pilote.idApiPilote,
+        },
+      });
+
+      if (!gpPilote) {
+        console.warn(`❌ GrandPrixPilote DNF non trouvé pour ${acronym}`);
+        continue;
+      }
+
+      const classement = await this.prisma.grandPrixClassement.findFirst({
+        where: {
+          idGrandPrix: grandPrix.idApiRaces,
+          idGrandPrixPilote: gpPilote.id,
+        },
+      });
+
+      if (classement) {
+        await this.prisma.grandPrixClassement.update({
+          where: { id: classement.id },
+          data: {
+            position: null, // Les pilotes DNF n'ont pas de position
+            isDnf: true,
+            isFirstDnf,
+          },
+        });
+        console.log(
+          `⚠️ Mis à jour DNF pour ${acronym}${isFirstDnf ? ' (Premier DNF)' : ''}`,
+        );
+      } else {
+        await this.prisma.grandPrixClassement.create({
+          data: {
+            idGrandPrix: grandPrix.idApiRaces,
+            idGrandPrixPilote: gpPilote.id,
+            position: null,
+            isDnf: true,
+            isFirstDnf,
+          },
+        });
+        console.log(
+          `⚠️ Création DNF pour ${acronym}${isFirstDnf ? ' (Premier DNF)' : ''}`,
+        );
       }
     }
   }

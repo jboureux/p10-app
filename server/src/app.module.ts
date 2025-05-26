@@ -9,21 +9,22 @@ import { join } from 'node:path';
 import { AuthModule } from './auth/auth.module';
 import { BetSelectionResultModule } from './bet-selection-result/bet-selection-result.module';
 import { ErgastModule } from './ergast/ergast.module';
-import { F1ApiModule } from './f1-api/f1-api.module';
+import { GrandPrixModule } from './grand-prix/grand-prix.module';
 import { JoinRequestModule } from './join-request/join-request.module';
 import { LeagueModule } from './league/league.module';
+import { PubSubModule } from './public-subscription/public-subscription.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
     ScheduleModule.forRoot(),
     ErgastModule,
-    F1ApiModule,
     AuthModule,
     UsersModule,
     LeagueModule,
     JoinRequestModule,
     BetSelectionResultModule,
+    GrandPrixModule,
     PubSubModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET || 'dev-secret',

@@ -1,22 +1,22 @@
-import { ObjectType, Field, ID, Int } from '@nestjs/graphql';
-import { User } from './user.entity';
-import { GrandPrix } from './grand-prix.entity';
+import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
 import { GrandPrixPilote } from './grand-prix-pilote.entity';
+import { GrandPrix } from './grand-prix.entity';
+import { User } from './user.entity';
 
 @ObjectType()
 export class BetsSelectionResult {
   @Field(() => ID)
   id: string;
 
-  @Field(() => Int)
+  @Field(() => Int, { name: 'point_p10' })
   pointP10: number;
 
-  @Field(() => User)
+  @Field(() => User, { name: 'user' })
   user: User;
 
-  @Field(() => GrandPrix, { name: 'grand_prix' })
+  @Field(() => GrandPrix, { name: 'grand_prix', nullable: true })
   grandPrix: GrandPrix;
 
-  @Field(() => GrandPrixPilote, { name: 'grand_prix_pilote' })
+  @Field(() => GrandPrixPilote, { name: 'grand_prix_pilote', nullable: true })
   grandPrixPilote: GrandPrixPilote;
 }

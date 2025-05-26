@@ -2,79 +2,29 @@
 
 import { useState } from "react";
 
+import { GrandPrix } from "@/types/grandprix";
 import GrandPrixCardList from "./GrandPrixCardList";
 import Tabs from "./Tabs";
 
-export type GrandPrix = {
-  idApiRaces: string;
-  season: string;
-  date: string;
-  time: string;
-  track: {
-    country: string;
-    name: string;
-  };
-  grandPrixClassement?: Array<{
-    status: string;
-    driver: string;
-  }>;
-};
+interface CoursesPageProps {
+  grandPrixList: Partial<GrandPrix>[];
+}
 
-export default function CoursesPage() {
+const CoursesPage = (props: CoursesPageProps) => {
   const [activeTab, setActiveTab] = useState<"upcoming" | "past">("upcoming");
-
-  // TODO: fetch GP GPClassement
-  const allGrandPrixList: GrandPrix[] = [
-    {
-      idApiRaces: "bahrain2025",
-      season: "2024",
-      date: "2025-08-20T14:00:00Z",
-      time: "2025-03-02T14:00:00Z",
-      track: {
-        country: "Bahrain",
-        name: "Bahrain International Circuit",
-      },
-      grandPrixClassement: [],
-    },
-    {
-      idApiRaces: "australia2025",
-      season: "2025",
-      date: "2025-03-24T05:00:00Z",
-      time: "2025-03-24T05:00:00Z",
-      track: {
-        country: "Australia",
-        name: "Albert Park Circuit",
-      },
-      grandPrixClassement: [
-        { status: "P10", driver: "ALB" },
-        { status: "DNF", driver: "OCO" },
-      ],
-    },
-    {
-      idApiRaces: "japan2024",
-      season: "2024",
-      date: "2024-09-22T06:00:00Z",
-      time: "2024-09-22T06:00:00Z",
-      track: {
-        country: "Japan",
-        name: "Suzuka International Racing Course",
-      },
-      grandPrixClassement: [
-        { status: "P10", driver: "GAS" },
-        { status: "DNF", driver: "VER" },
-      ],
-    },
-  ];
 
   const now = new Date();
 
-  const upcomingGrandPrixList = allGrandPrixList.filter(
-    (gp) => new Date(gp.date) > now
+  const upcomingGrandPrixList = props.grandPrixList.filter(
+    (gp) => gp.date && new Date(gp.date) > now
   );
 
-  const pastGrandPrixList = allGrandPrixList.filter(
-    (gp) => new Date(gp.date) < now
-  );
+  const pastGrandPrixList = props.grandPrixList
+    .filter((gp) => gp.date && new Date(gp.date) < now)
+    .sort(
+      (a, b) =>
+        new Date(b.date ?? "").getTime() - new Date(a.date ?? "").getTime()
+    );
 
   return (
     <div className="min-h-screen bg-[#EEF3F6]">
@@ -92,4 +42,6 @@ export default function CoursesPage() {
       )}
     </div>
   );
-}
+};
+
+export default CoursesPage;

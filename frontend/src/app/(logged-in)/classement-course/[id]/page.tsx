@@ -1,14 +1,10 @@
 "use client";
 
-import { useParams } from "next/navigation";
-
-import RaceRankingHeader from "./_components/RaceRankingHeader";
-import RaceRanking from "./_components/RaceRanking";
 import { raceRakingPointDistribution } from "@/config/race-ranking-point-distribution";
+import RaceRanking from "./_components/RaceRanking";
+import RaceRankingHeader from "./_components/RaceRankingHeader";
 
 export default function RaceRankingPage() {
-  const params = useParams();
-
   // TODO: fetch race infos then race results (hiren api works by searching by a specific date)
   //const racingId = decodeURIComponent(params.id as string);
   const raceCountry = "Japan";

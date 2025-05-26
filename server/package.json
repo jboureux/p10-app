@@ -20,7 +20,7 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "seed:ergast": "ts-node -r tsconfig-paths/register src/run-ergast-complete-cron.ts",
-    "seed:f1": "ts-node -r tsconfig-paths/register scripts/test-f1-api-with-dnf.ts"
+    "test:ergast-dnf": "ts-node -r tsconfig-paths/register scripts/test-ergast-dnf.ts"
   },
   "dependencies": {
     "@apollo/server": "^4.11.3",

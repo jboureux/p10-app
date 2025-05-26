@@ -95,6 +95,7 @@ model GrandPrixClassement {
   idGrandPrixPilote String  @map("id_grand_prix_pilote")
   position          Int?
   isDnf             Boolean @default(false) @map("is_dnf")
+  isFirstDnf        Boolean @default(false) @map("is_first_dnf")
 
   grandPrix       GrandPrix       @relation(fields: [idGrandPrix], references: [idApiRaces])
   grandPrixPilote GrandPrixPilote @relation(fields: [idGrandPrixPilote], references: [id])
