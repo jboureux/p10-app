@@ -5,4 +5,11 @@ export interface User {
   firstname: string;
   lastname: string;
   bets_selection_results: Partial<BetSelectionResult>[];
+  email: string;
+}
+
+export interface UserResponse {
+  data: {
+    user: User;
+  };
 }

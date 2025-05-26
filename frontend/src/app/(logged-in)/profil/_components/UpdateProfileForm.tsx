@@ -1,24 +1,59 @@
+import { useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui";
+import { User } from "@/types/users";
+import { updateProfile } from "../_actions/update-profile.action";
 
-export default function UpdateProfileForm() {
+export default function UpdateProfileForm({ user }: { user: User }) {
+  const [isLoading, setIsLoading] = useState(false);
   const {
     register,
     handleSubmit,
     formState: { errors },
+    reset,
   } = useForm();
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-    // TODO: Update profile
-    console.log(data);
-  };
+    setIsLoading(true);
+    try {
+      // Préparer les données à envoyer
+      const updateData: any = {};
 
-  // TODO: Get user info
-  const userInfo = {
-    firstName: "Jane",
-    lastName: "Doe",
-    email: "jane@gmail.com",
+      // Ajouter seulement les champs modifiés
+      if (data.firstname && data.firstname !== user.firstname) {
+        updateData.firstname = data.firstname;
+      }
+      if (data.lastname && data.lastname !== user.lastname) {
+        updateData.lastname = data.lastname;
+      }
+      if (data.email && data.email !== user.email) {
+        updateData.email = data.email;
+      }
+      if (data.newPassword && data.newPassword.trim() !== "") {
+        updateData.newPassword = data.newPassword;
+        updateData.currentPassword = data.currentPassword;
+      }
+
+      const result = await updateProfile(updateData);
+
+      if (result?.data) {
+        console.log("Profil mis à jour avec succès !");
+        // Réinitialiser le champ mot de passe
+        reset({
+          firstname: data.firstname,
+          lastname: data.lastname,
+          email: data.email,
+          currentPassword: "",
+          newPassword: "",
+        });
+      }
+    } catch (error) {
+      console.error("Erreur lors de la mise à jour:", error);
+      console.error("Erreur lors de la mise à jour du profil");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -27,33 +62,33 @@ export default function UpdateProfileForm() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label
-              htmlFor="firstName"
+              htmlFor="firstname"
               className="block text-sm font-semibold mb-1"
             >
               Prénom
             </label>
             <input
-              id="firstName"
+              id="firstname"
               type="text"
-              defaultValue={userInfo.firstName}
+              defaultValue={user.firstname}
               className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none"
-              {...register("firstName")}
+              {...register("firstname")}
             />
           </div>
 
           <div>
             <label
-              htmlFor="lastName"
+              htmlFor="lastname"
               className="block text-sm font-semibold mb-1"
             >
               Nom
             </label>
             <input
-              id="lastName"
+              id="lastname"
               type="text"
-              defaultValue={userInfo.lastName}
+              defaultValue={user.lastname}
               className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none"
-              {...register("lastName")}
+              {...register("lastname")}
             />
           </div>
         </div>
@@ -66,7 +101,7 @@ export default function UpdateProfileForm() {
             id="email"
             type="email"
             autoComplete="email"
-            defaultValue={userInfo.email}
+            defaultValue={user.email}
             className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none"
             {...register("email", { required: true })}
           />
@@ -77,18 +112,21 @@ export default function UpdateProfileForm() {
 
         <div>
           <label
-            htmlFor="password"
+            htmlFor="currentPassword"
             className="block text-sm font-semibold mb-1"
           >
-            Mot de passe
+            Mot de passe actuel
           </label>
           <input
-            id="password"
+            id="currentPassword"
             type="password"
             placeholder="•••••••••••"
             className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none"
-            {...register("password", { required: true })}
+            {...register("currentPassword")}
           />
+          <p className="text-gray-500 text-xs mt-1">
+            Laissez vide si vous ne souhaitez pas changer votre mot de passe
+          </p>
         </div>
 
         <div>
@@ -103,12 +141,27 @@ export default function UpdateProfileForm() {
             type="password"
             placeholder="•••••••••••"
             className="w-full border border-gray-300 rounded-xl px-4 py-2 focus:outline-none"
-            {...register("password", { required: true })}
+            {...register("newPassword", {
+              minLength: {
+                value: 6,
+                message: "Le mot de passe doit contenir au moins 6 caractères",
+              },
+            })}
           />
+          {errors.newPassword && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.newPassword.message as string}
+            </p>
+          )}
         </div>
 
         <div className="text-center">
-          <Button type="submit" text="Mettre à jour" widthFull />
+          <Button
+            type="submit"
+            text={isLoading ? "Mise à jour..." : "Mettre à jour"}
+            widthFull
+            disabled={isLoading}
+          />
         </div>
       </form>
     </div>
