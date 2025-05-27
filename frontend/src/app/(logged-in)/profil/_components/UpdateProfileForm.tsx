@@ -1,8 +1,12 @@
+"use client";
+
 import { useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui";
 import { User } from "@/types/users";
+
+import { useRouter } from "next/navigation";
 import { updateProfile } from "../_actions/update-profile.action";
 
 export default function UpdateProfileForm({ user }: { user: User }) {
@@ -13,6 +17,8 @@ export default function UpdateProfileForm({ user }: { user: User }) {
     formState: { errors },
     reset,
   } = useForm();
+
+  const router = useRouter();
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     setIsLoading(true);
@@ -53,6 +59,7 @@ export default function UpdateProfileForm({ user }: { user: User }) {
           currentPassword: "",
           newPassword: "",
         });
+        router.refresh();
       }
     } catch (error) {
       console.error("Erreur lors de la mise à jour:", error);
