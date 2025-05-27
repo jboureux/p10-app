@@ -35,10 +35,14 @@ const Bet = (props: BetProps) => {
   const router = useRouter();
   const [selectedEcurie, setSelectedEcurie] = useState<string | null>(null);
   const [selectedP10, setSelectedP10] = useState<string | null>(
-    props.currentBet.grand_prix_pilote_p10.id
+    props.currentBet.grand_prix_pilote_p10
+      ? props.currentBet.grand_prix_pilote_p10.id
+      : null
   );
   const [selectedDNF, setSelectedDNF] = useState<string | null>(
-    props.currentBet.grand_prix_pilote_dnf.id
+    props.currentBet.grand_prix_pilote_dnf
+      ? props.currentBet.grand_prix_pilote_dnf.id
+      : null
   );
 
   const handleBet = async () => {
