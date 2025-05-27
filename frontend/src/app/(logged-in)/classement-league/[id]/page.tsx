@@ -78,7 +78,7 @@ const LeagueRankingPage = async (props: LeagueRankingPageProps) => {
                     return score;
                   })
                   .filter((points) => points !== undefined)
-                  .reduce((curr, acc) => curr + acc)
+                  .reduce((curr, acc) => curr + acc, 0)
               : 0,
         };
       }
