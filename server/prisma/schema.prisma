@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "darwin-arm64"]
 }
 
 datasource db {
@@ -8,11 +9,157 @@ datasource db {
 }
 
 model User {
-  id            Int     @id @default(autoincrement())
-  email         String  @unique
-  firstname     String ?
-  lastname      String ?
-  password      String ?
-  role          String ?
-  apiAvatarId   String ?  @map("api_avatar_id") // correspondance à ta colonne logique
+  id          String  @id @unique @default(uuid())
+  email       String  @unique
+  firstname   String?
+  lastname    String?
+  password    String
+  role        String
+  apiAvatarId String  @map("api_avatar_id")
+
+  userLeague         UserLeague[]
+  BetSelectionResult BetSelectionResult[]
+  joinRequests       JoinRequest[]
+}
+
+model League {
+  id          String  @id @unique @default(uuid())
+  name        String
+  sharedLink  String  @unique @map("shared_link")
+  isPrivate   Boolean @map("is_private")
+  isActive    Boolean @map("is_active")
+  apiAvatarId String  @map("api_avatar_id")
+
+  userLeague   UserLeague[]
+  joinRequests JoinRequest[]
+}
+
+model UserLeague {
+  id       String  @id @unique @default(uuid())
+  userId   String  @map("user_id")
+  leagueId String  @map("league_id")
+  isAdmin  Boolean @map("is_admin")
+  role     String
+
+  user   User   @relation(fields: [userId], references: [id])
+  league League @relation(fields: [leagueId], references: [id], onDelete: Cascade)
+}
+
+model Ecurie {
+  idApiEcurie String @id @unique @map("id_api_ecurie")
+  name        String
+  logo        String
+  color       String
+
+  pilotesEcurie   PiloteEcurie[]
+  GrandPrixPilote GrandPrixPilote[]
+}
+
+model Pilote {
+  idApiPilote String @id @unique @default(uuid()) @map("id_api_pilote")
+  name        String
+  picture     String
+  nameAcronym String @map("name_acronym")
+
+  pilotesEcurie   PiloteEcurie[]
+  GrandPrixPilote GrandPrixPilote[]
+}
+
+model PiloteEcurie {
+  id       String   @id @unique @default(uuid())
+  piloteId String   @map("pilote_id")
+  ecurieId String   @map("ecurie_id")
+  year     DateTime
+
+  pilote Pilote @relation(fields: [piloteId], references: [idApiPilote])
+  ecurie Ecurie @relation(fields: [ecurieId], references: [idApiEcurie])
+}
+
+model GrandPrix {
+  idApiRaces String   @id @unique @default(uuid()) @map("id_api_races")
+  season     String
+  date       DateTime
+  time       DateTime
+  idApiTrack String   @map("id_api_track")
+
+  track Track @relation(fields: [idApiTrack], references: [idApiTrack])
+
+  betSelectionResult  BetSelectionResult[]
+  grandPrixClassement GrandPrixClassement[]
+  GrandPrixPilote     GrandPrixPilote[]
+}
+
+model GrandPrixClassement {
+  id                String  @id @unique @default(uuid())
+  idGrandPrix       String  @map("id_grand_prix")
+  idGrandPrixPilote String  @map("id_grand_prix_pilote")
+  position          Int?
+  isDnf             Boolean @default(false) @map("is_dnf")
+  isFirstDnf        Boolean @default(false) @map("is_first_dnf")
+
+  grandPrix       GrandPrix       @relation(fields: [idGrandPrix], references: [idApiRaces])
+  grandPrixPilote GrandPrixPilote @relation(fields: [idGrandPrixPilote], references: [id])
+}
+
+model GrandPrixPilote {
+  id          String @id @unique @default(uuid())
+  idGrandPrix String @map("id_grand_prix")
+  idPilote    String @map("id_pilote")
+  idEcurie    String @map("id_ecurie")
+
+  grandPrix             GrandPrix             @relation(fields: [idGrandPrix], references: [idApiRaces])
+  pilote                Pilote                @relation(fields: [idPilote], references: [idApiPilote])
+  ecurie                Ecurie                @relation(fields: [idEcurie], references: [idApiEcurie])
+  GrandPrixClassement   GrandPrixClassement[]
+  BetSelectionResultP10 BetSelectionResult[]  @relation("P10Bet")
+  BetSelectionResultDnf BetSelectionResult[]  @relation("DnfBet")
+}
+
+model BetSelectionResult {
+  id          String @id @unique @default(uuid())
+  userId      String @map("user_id")
+  idGrandPrix String @map("id_grand_prix")
+  pointP10    Int?   @map("point_p10")
+  pointDnf    Int?   @map("point_dnf")
+  idPiloteP10 String @map("id_pilote_p10")
+  idPiloteDnf String @map("id_pilote_dnf")
+
+  user               User            @relation(fields: [userId], references: [id])
+  grandPrix          GrandPrix       @relation(fields: [idGrandPrix], references: [idApiRaces])
+  grandPrixPiloteP10 GrandPrixPilote @relation("P10Bet", fields: [idPiloteP10], references: [id])
+  grandPrixPiloteDnf GrandPrixPilote @relation("DnfBet", fields: [idPiloteDnf], references: [id])
+}
+
+model Track {
+  idApiTrack     String @id @unique @default(uuid()) @map("id_api_track")
+  countryName    String @map("country_name")
+  trackName      String @map("track_name")
+  pictureCountry String @map("picture_country")
+  pictureTrack   String @map("picture_track")
+
+  GrandPrix GrandPrix[]
+}
+
+model JoinRequest {
+  id        String            @id @unique @default(uuid())
+  userId    String            @map("user_id")
+  leagueId  String            @map("league_id")
+  status    JoinRequestStatus @default(PENDING)
+  createdAt DateTime          @default(now())
+
+  user   User   @relation(fields: [userId], references: [id])
+  league League @relation(fields: [leagueId], references: [id], onDelete: Cascade)
+}
+
+enum JoinRequestStatus {
+  PENDING
+  ACCEPTED
+  REFUSED
+}
+
+model BlacklistedToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  createdAt DateTime @default(now())
+  expiresAt DateTime
 }

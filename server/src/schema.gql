@@ -2,70 +2,245 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-input CreateUserInput {
-  """User email"""
+type AuthResponse {
+  token: String!
+  user: User!
+}
+
+type BetSelectionResult {
+  grand_prix: GrandPrix
+  grand_prix_pilote_dnf: GrandPrixPilote
+  grand_prix_pilote_p10: GrandPrixPilote
+  id: ID!
+  point_dnf: Int
+  point_p10: Int
+  user: User!
+}
+
+input CreateBetSelectionResultInput {
+  grandPrixId: ID!
+  grandPrixPiloteIdDNF: ID!
+  grandPrixPiloteIdP10: ID!
+}
+
+input CreateJoinRequestInput {
+  leagueId: ID!
+}
+
+input CreateLeagueInput {
+  apiAvatarId: String!
+  isPrivate: Boolean!
+  name: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Ecurie {
+  color: String!
+  id_api_ecurie: ID!
+  logo: String!
+  name: String!
+  pilote_ecurie: [PiloteEcurie!]
+}
+
+type GrandPrix {
+  bets_selection_result: BetSelectionResult
+
+  """Grand Prix date"""
+  date: DateTime!
+  grand_prix_classement: [GrandPrixClassement!]
+
+  """ID get with API Races"""
+  id_api_races: String!
+
+  """Grand Prix Season"""
+  season: String!
+
+  """Grand Prix time"""
+  time: DateTime!
+  track: Track
+}
+
+type GrandPrixClassement {
+  grand_prix: GrandPrix
+  grand_prix_pilote: GrandPrixPilote
+  id: ID!
+  is_dnf: Boolean
+  is_first_dnf: Boolean
+  position: Int
+}
+
+type GrandPrixPilote {
+  ecurie: Ecurie
+  grand_prix: GrandPrix
+  grand_prix_classement: [GrandPrixClassement!]
+  id: ID!
+  pilote: Pilote
+}
+
+type JoinRequest {
+  createdAt: DateTime!
+  id: ID!
+  league: League!
+  status: JoinRequestStatus!
+  user: User!
+}
+
+enum JoinRequestStatus {
+  ACCEPTED
+  PENDING
+  REFUSED
+}
+
+type League {
+  apiAvatarId: String!
+  id: ID!
+  isActive: Boolean!
+  isPrivate: Boolean!
+  name: String!
+  sharedLink: String!
+  user_league: [UserLeague!]
+}
+
+input LoginInput {
   email: String!
-
-  """User first name"""
-  firstname: String!
-
-  """User last name"""
-  lastname: String!
-
-  """User password"""
   password: String!
-
-  """User role"""
-  role: String!
 }
 
 type Mutation {
-  createUser(createUserInput: CreateUserInput!): User!
-  removeUser(id: Int!): User!
+  createBet(input: CreateBetSelectionResultInput!): BetSelectionResult!
+  createJoinRequest(input: CreateJoinRequestInput!): JoinRequest!
+  createLeague(input: CreateLeagueInput!): League!
+  deleteLeague(leagueId: String!): Boolean!
+  joinPrivateLeagueWithLink(sharedLink: String!): Boolean!
+  leaveLeague(leagueId: String!): Boolean!
+  login(input: LoginInput!): AuthResponse!
+  logout: Boolean!
+  register(input: RegisterInput!): AuthResponse!
+  removeUser(id: String!): User!
+  updateBet(input: UpdateBetSelectionResultInput!): BetSelectionResult!
+  updateJoinRequestStatus(input: UpdateJoinRequestStatusInput!): JoinRequest!
+  updateProfile(updateProfileInput: UpdateProfileInput!): User!
   updateUser(updateUserInput: UpdateUserInput!): User!
 }
 
+type Pilote {
+  id_api_pilote: ID!
+  name: String!
+  name_acronym: String!
+  picture: String!
+  pilote_ecurie: [PiloteEcurie!]
+}
+
+type PiloteEcurie {
+  ecurie: Ecurie!
+  id: ID!
+  pilote: Pilote!
+  year: DateTime!
+}
+
 type Query {
-  user(id: Int!): User!
+  allGrandPrix: [GrandPrix!]!
+  getAllLeagues: [League!]!
+  getUserBetForGrandPrix(grandPrixId: String!): BetSelectionResult
+  grandPrixPilotes(grandPrixId: String!): [GrandPrixPilote!]!
+  hasUserBetOnGrandPrix(grandPrixId: String!): UserBetStatus!
+  isLogged: Boolean!
+  league(id: String!): League!
+  myLeagues: [League!]!
+  nextGrandPrix: GrandPrix
+  pastGrandPrix: [GrandPrix!]!
+  pendingRequestsByLeague(leagueId: String!): [JoinRequest!]!
+  upcomingGrandPrix: [GrandPrix!]!
+  user(id: String!): User!
   users: [User!]!
 }
 
-input UpdateUserInput {
-  """User email"""
+input RegisterInput {
+  email: String!
+  firstname: String!
+  lastname: String!
+  password: String!
+}
+
+type Subscription {
+  joinRequestCreated: String!
+  joinRequestResolved: String!
+}
+
+type Track {
+  """Name of the country where race is running"""
+  country_name: String
+  grandPrix: [GrandPrix!]
+
+  """ID get with Api Tracks"""
+  id_api_track: String
+
+  """Path of the picture country"""
+  picture_country: String
+
+  """Circuit picture of the track"""
+  picture_track: String
+
+  """Name of the track"""
+  track_name: String
+}
+
+input UpdateBetSelectionResultInput {
+  grandPrixPiloteIdDNF: ID!
+  grandPrixPiloteIdP10: ID!
+  id: ID!
+}
+
+input UpdateJoinRequestStatusInput {
+  requestId: ID!
+  status: JoinRequestStatus!
+}
+
+input UpdateProfileInput {
+  currentPassword: String
   email: String
-
-  """User first name"""
   firstname: String
-
-  """User ID"""
-  id: Int!
-
-  """User last name"""
   lastname: String
+  newPassword: String
+}
 
-  """User password"""
+input UpdateUserInput {
+  apiAvatarId: String
+  email: String
+  firstname: String
+  id: ID!
+  lastname: String
   password: String
-
-  """User role"""
   role: String
 }
 
 type User {
-  """User email"""
+  api_avatar_id: String
+  bet_selection_result: [BetSelectionResult!]
   email: String!
-
-  """User first name"""
-  firstname: String!
-
-  """User ID"""
-  id: Int!
-
-  """User last name"""
-  lastname: String!
-
-  """User password"""
-  password: String!
-
-  """User role"""
+  firstname: String
+  id: ID!
+  lastname: String
   role: String!
+  user_league: [UserLeague!]
+}
+
+type UserBetStatus {
+  """ID du pari si l'utilisateur a déjà parié"""
+  bet_id: ID
+
+  """Indique si l'utilisateur a déjà parié sur ce Grand Prix"""
+  has_bet: Boolean!
+}
+
+type UserLeague {
+  id: ID!
+  is_admin: Boolean
+  league: League!
+  role: String!
+  user: User!
 }

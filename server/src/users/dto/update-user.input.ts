@@ -1,20 +1,30 @@
-import { Field, InputType, Int, PartialType } from '@nestjs/graphql';
-import { CreateUserInput } from './create-user.input';
+// src/users/dto/update-user.input.ts
+import { Field, ID, InputType } from '@nestjs/graphql';
+import { MinLength } from 'class-validator';
 
 @InputType()
-export class UpdateUserInput extends PartialType(CreateUserInput) {
-  @Field(() => Int, { description: 'User ID' })
-  id: number;
+export class UpdateUserInput {
+  @Field(() => ID)
+  id: string;
 
-  @Field(() => String, { description: 'User email', nullable: true })
-  email: string;
+  @Field({ nullable: true })
+  email?: string;
 
-  @Field(() => String, { description: 'User first name', nullable: true })
-  firstname: string;
+  @Field({ nullable: true })
+  firstname?: string;
 
-  @Field(() => String, { description: 'User last name', nullable: true })
-  lastname: string;
+  @Field({ nullable: true })
+  lastname?: string;
 
-  @Field(() => String, { description: 'User role', nullable: true })
-  role: string;
+  @Field({ nullable: true })
+  role?: string;
+
+  @Field({ nullable: true })
+  apiAvatarId?: string;
+
+  @Field({ nullable: true })
+  @MinLength(6, {
+    message: 'Le mot de passe doit contenir au moins 6 caractères',
+  })
+  password?: string;
 }
