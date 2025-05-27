@@ -7,7 +7,9 @@ interface PodiumProps {
 }
 
 export default function Podium({ items }: PodiumProps) {
-  const [second, first, third] = items;
+  let first = items.length > 0 ? items[0] : null;
+  let second = items.length > 1 ? items[1] : null;
+  let third = items.length > 2 ? items[2] : null;
 
   const colors = ["bg-[#B76E79]", "bg-[#C62828]", "bg-[#F28C8C]"];
   const heights = ["h-20 md:h-28", "h-28 md:h-36", "h-16 md:h-24"];

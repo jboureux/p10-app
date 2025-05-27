@@ -1,7 +1,7 @@
 import { User } from "@/types/users";
 
 export default function BetsList({ user }: { user: User }) {
-  const bets = user.bets_selection_results;
+  const bets = user.bet_selection_result;
 
   if (!bets) {
     return <div>No bets found</div>;
@@ -43,7 +43,7 @@ export default function BetsList({ user }: { user: User }) {
                   {bet.grand_prix_pilote_p10?.pilote?.name}
                 </div>
                 <div className="text-sm text-[#C62828] font-bold">
-                  {bet.pointP10} pts
+                  {bet.point_p10 ? `${bet.point_p10} pts` : "Not scored"}
                 </div>
               </div>
 
@@ -53,7 +53,7 @@ export default function BetsList({ user }: { user: User }) {
                   {bet.grand_prix_pilote_dnf?.pilote?.name}
                 </div>
                 <div className="text-sm text-[#C62828] font-bold">
-                  {bet.pointP10} pts
+                  {bet.point_dnf ? `${bet.point_dnf} pts` : "Not scored"}
                 </div>
               </div>
             </div>

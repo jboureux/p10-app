@@ -8,8 +8,11 @@ export class BetSelectionResult {
   @Field(() => ID)
   id: string;
 
-  @Field(() => Int, { name: 'point_p10' })
+  @Field(() => Int, { name: 'point_p10', nullable: true })
   pointP10: number;
+
+  @Field(() => Int, { name: 'point_dnf', nullable: true })
+  pointDnf: number;
 
   @Field(() => User, { name: 'user' })
   user: User;

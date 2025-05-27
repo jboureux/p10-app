@@ -1,6 +1,6 @@
-import { ObjectType, Field, ID } from '@nestjs/graphql';
-import { UserLeague } from './user-league.entity';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { BetSelectionResult } from './bets-selection-result.entity';
+import { UserLeague } from './user-league.entity';
 
 @ObjectType()
 export class User {
@@ -25,6 +25,9 @@ export class User {
   @Field(() => [UserLeague])
   user_league?: UserLeague[];
 
-  @Field(() => [BetSelectionResult])
-  bets_selection_results?: BetSelectionResult[];
+  @Field(() => [BetSelectionResult], {
+    nullable: true,
+    name: 'bet_selection_result',
+  })
+  BetSelectionResult?: BetSelectionResult[];
 }

@@ -29,8 +29,9 @@ const LeagueRankingPage = async (props: LeagueRankingPageProps) => {
         user {
           firstname
           lastname
-          bets_selection_results {
+          bet_selection_result {
             point_p10
+            point_dnf
           }
         }
       }
@@ -46,6 +47,7 @@ const LeagueRankingPage = async (props: LeagueRankingPageProps) => {
     token: await retrieveToken(),
   });
 
+  console.log(result);
   if (result.errors) {
     console.log(result.errors);
     redirect("/league");
@@ -62,13 +64,18 @@ const LeagueRankingPage = async (props: LeagueRankingPageProps) => {
           fullName: `${userLeague.user.firstname} ${userLeague.user.lastname}`,
           isAdmin: userLeague.is_admin ? userLeague.is_admin : false,
           points:
-            userLeague.user.bets_selection_results &&
-            userLeague.user.bets_selection_results !== null
-              ? userLeague.user.bets_selection_results
+            userLeague.user.bet_selection_result &&
+            userLeague.user.bet_selection_result !== null
+              ? userLeague.user.bet_selection_result
                   .map((bet) => {
-                    if (bet.pointP10) {
-                      return bet.pointP10;
+                    let score = 0;
+                    if (bet.point_p10) {
+                      score += bet.point_p10;
                     }
+                    if (bet.point_dnf) {
+                      score += bet.point_dnf;
+                    }
+                    return score;
                   })
                   .filter((points) => points !== undefined)
                   .reduce((curr, acc) => curr + acc)

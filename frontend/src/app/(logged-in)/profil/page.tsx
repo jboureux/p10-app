@@ -11,8 +11,10 @@ export default async function ProfilePage() {
       email
       firstname
       lastname
-      bets_selection_results {
+      bet_selection_result {
+        id
         point_p10
+        point_dnf
         grand_prix {
           date
           season
@@ -22,7 +24,18 @@ export default async function ProfilePage() {
             country_name
           }
         }
-        grand_prix_pilote {
+        grand_prix_pilote_p10 {
+          pilote {
+            name
+            name_acronym
+            pilote_ecurie {
+              ecurie {
+                name
+              }
+            }
+          }
+        }
+        grand_prix_pilote_dnf {
           pilote {
             name
             name_acronym
@@ -39,7 +52,7 @@ export default async function ProfilePage() {
   `;
 
   const userId = await retrieveUserId();
-
+  console.log(userId);
   const variables = {
     userId: userId,
   };
@@ -49,8 +62,6 @@ export default async function ProfilePage() {
     variables: variables,
     token: await retrieveToken(),
   });
-
-  console.log(result);
 
   return <ProfileTabs user={result.data.user} />;
 }

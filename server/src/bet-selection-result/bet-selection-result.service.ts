@@ -48,7 +48,6 @@ export class BetSelectionResultService {
 
       return await this.prisma.betSelectionResult.create({
         data: {
-          pointP10: 0,
           user: { connect: { id: userId } },
           grandPrix: { connect: { idApiRaces: input.grandPrixId } },
           grandPrixPiloteP10: { connect: { id: input.grandPrixPiloteIdP10 } },

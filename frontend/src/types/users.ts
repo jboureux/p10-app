@@ -4,7 +4,7 @@ export interface User {
   id: string;
   firstname: string;
   lastname: string;
-  bets_selection_results: Partial<BetSelectionResult>[];
+  bet_selection_result: Partial<BetSelectionResult>[];
   email: string;
 }
 

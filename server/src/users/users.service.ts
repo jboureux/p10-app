@@ -29,14 +29,45 @@ export class UsersService {
   findOne(id: string) {
     return this.prisma.user.findFirst({
       where: { id: id },
-      select: {
-        id: true,
-        email: true,
-        firstname: true,
-        lastname: true,
-        role: true,
-        apiAvatarId: true,
-        password: false,
+      include: {
+        BetSelectionResult: {
+          include: {
+            grandPrix: {
+              include: {
+                track: true,
+              },
+            },
+            grandPrixPiloteP10: {
+              include: {
+                pilote: {
+                  include: {
+                    pilotesEcurie: {
+                      include: {
+                        ecurie: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            grandPrixPiloteDnf: {
+              include: {
+                pilote: {
+                  include: {
+                    pilotesEcurie: {
+                      include: {
+                        ecurie: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      omit: {
+        password: true,
       },
     });
   }

@@ -4,7 +4,9 @@ import { User } from "./users";
 export interface BetSelectionResult {
   id: string;
 
-  pointP10: number;
+  point_p10: number | null;
+
+  point_dnf: number | null;
 
   user: Partial<User>;
 

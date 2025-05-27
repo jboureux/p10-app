@@ -12,7 +12,8 @@ type BetSelectionResult {
   grand_prix_pilote_dnf: GrandPrixPilote
   grand_prix_pilote_p10: GrandPrixPilote
   id: ID!
-  point_p10: Int!
+  point_dnf: Int
+  point_p10: Int
   user: User!
 }
 
@@ -219,7 +220,7 @@ input UpdateUserInput {
 
 type User {
   api_avatar_id: String
-  bets_selection_results: [BetSelectionResult!]
+  bet_selection_result: [BetSelectionResult!]
   email: String!
   firstname: String
   id: ID!

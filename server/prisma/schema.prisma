@@ -119,7 +119,8 @@ model BetSelectionResult {
   id          String @id @unique @default(uuid())
   userId      String @map("user_id")
   idGrandPrix String @map("id_grand_prix")
-  pointP10    Int    @map("point_p10")
+  pointP10    Int?   @map("point_p10")
+  pointDnf    Int?   @map("point_dnf")
   idPiloteP10 String @map("id_pilote_p10")
   idPiloteDnf String @map("id_pilote_dnf")
 

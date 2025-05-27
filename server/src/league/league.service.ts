@@ -154,7 +154,11 @@ export class LeagueService {
       include: {
         userLeague: {
           include: {
-            user: true, // optionnel si tu veux les infos du user
+            user: {
+              include: {
+                BetSelectionResult: true,
+              },
+            },
           },
         },
       },
