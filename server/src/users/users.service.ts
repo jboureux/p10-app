@@ -7,10 +7,16 @@ import * as bcrypt from 'bcryptjs';
 import { PrismaService } from '../prisma.service';
 import { UpdateProfileInput } from './dto/update-profile.input';
 import { UpdateUserInput } from './dto/update-user.input';
+import { InjectMetric } from '@willsoto/nestjs-prometheus';
+import { Gauge } from 'prom-client';
+import { Cron } from '@nestjs/schedule';
 //Note : la création d'utilisateur est déléguée à AuthResolver.register
 @Injectable()
 export class UsersService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    @InjectMetric('p10_total_users') private readonly usersGauge: Gauge<string>,
+  ) {}
 
   async findAll() {
     return await this.prisma.user.findMany({
@@ -170,5 +176,11 @@ export class UsersService {
 
   async remove(id: string) {
     return await this.prisma.user.delete({ where: { id: id } });
+  }
+
+  @Cron('*/30 * * * * *') // Exécute toutes les 30 secondes
+  async updateTotalUserMetric() {
+    const totalUsers = await this.prisma.user.count();
+    this.usersGauge.set(totalUsers);
   }
 }

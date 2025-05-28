@@ -7,10 +7,16 @@ import {
 import { PrismaService } from '../prisma.service';
 import { CreateBetSelectionResultInput } from './dto/create-bet-selection-result';
 import { UpdateBetSelectionResultInput } from './dto/update-bet-selection-result';
+import { InjectMetric } from '@willsoto/nestjs-prometheus';
+import { Gauge } from 'prom-client';
+import { Cron } from '@nestjs/schedule';
 
 @Injectable()
 export class BetSelectionResultService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    @InjectMetric('p10_total_bets') private readonly betsGauge: Gauge<string>,
+  ) {}
 
   async create(userId: string, input: CreateBetSelectionResultInput) {
     const existingBet = await this.prisma.betSelectionResult.findFirst({
@@ -164,5 +170,11 @@ export class BetSelectionResultService {
     });
 
     return bet;
+  }
+
+  @Cron('*/30 * * * * *') // Exécute toutes les 30 secondes
+  async updateTotalBetMetric() {
+    const totalBets = await this.prisma.betSelectionResult.count();
+    this.betsGauge.set(totalBets);
   }
 }
