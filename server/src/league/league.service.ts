@@ -8,12 +8,17 @@ import { PubSub } from 'graphql-subscriptions';
 import ShortUniqueId from 'short-unique-id';
 import { PrismaService } from '../prisma.service';
 import { CreateLeagueInput } from './dto/create-league.input';
+import { Gauge } from 'prom-client';
+import { InjectMetric } from '@willsoto/nestjs-prometheus';
+import { Cron } from '@nestjs/schedule';
 
 @Injectable()
 export class LeagueService {
   constructor(
     private readonly prisma: PrismaService,
     @Inject('PUB_SUB') private readonly pubSub: PubSub,
+    @InjectMetric('p10_total_leagues')
+    private readonly leaguesGauge: Gauge<string>,
   ) {}
 
   async create(createLeagueInput: CreateLeagueInput, creatorId: string) {
@@ -195,5 +200,11 @@ export class LeagueService {
     });
 
     return true;
+  }
+
+  @Cron('*/30 * * * * *') // Exécute toutes les 30 secondes
+  async updateTotalUserMetric() {
+    const totalLeagues = await this.prisma.league.count();
+    this.leaguesGauge.set(totalLeagues);
   }
 }

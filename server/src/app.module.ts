@@ -14,6 +14,7 @@ import { JoinRequestModule } from './join-request/join-request.module';
 import { LeagueModule } from './league/league.module';
 import { PubSubModule } from './public-subscription/public-subscription.module';
 import { UsersModule } from './users/users.module';
+import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { UsersModule } from './users/users.module';
     BetSelectionResultModule,
     GrandPrixModule,
     PubSubModule,
+    PrometheusModule.register(),
     JwtModule.register({
       secret: process.env.JWT_SECRET || 'dev-secret',
     }),
